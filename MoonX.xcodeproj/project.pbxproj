@@ -8,22 +8,29 @@
 
 /* Begin PBXBuildFile section */
 		AE52B6502A9CB70A00786E7D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B64F2A9CB70A00786E7D /* AppDelegate.swift */; };
-		AE52B6522A9CB70A00786E7D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B6512A9CB70A00786E7D /* SceneDelegate.swift */; };
 		AE52B6542A9CB70A00786E7D /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B6532A9CB70A00786E7D /* ViewController.swift */; };
-		AE52B6572A9CB70A00786E7D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE52B6552A9CB70A00786E7D /* Main.storyboard */; };
 		AE52B6592A9CB70A00786E7D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE52B6582A9CB70A00786E7D /* Assets.xcassets */; };
 		AE52B65C2A9CB70A00786E7D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE52B65A2A9CB70A00786E7D /* LaunchScreen.storyboard */; };
+		AE52B6652A9CB80200786E7D /* NeonSDK in Frameworks */ = {isa = PBXBuildFile; productRef = AE52B6642A9CB80200786E7D /* NeonSDK */; };
+		AE52B6692A9CC1AA00786E7D /* Onboarding1VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B6682A9CC1AA00786E7D /* Onboarding1VC.swift */; };
+		AE52B66B2A9CC1EC00786E7D /* Onboarding2VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B66A2A9CC1EC00786E7D /* Onboarding2VC.swift */; };
+		AE52B66D2A9CC1F100786E7D /* Onboarding3VC.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B66C2A9CC1F100786E7D /* Onboarding3VC.swift */; };
+		AE52B66F2A9CC6B400786E7D /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B66E2A9CC6B400786E7D /* UIColor+Extension.swift */; };
+		AE52B6712A9CE4AD00786E7D /* InnApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B6702A9CE4AD00786E7D /* InnApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AE52B64C2A9CB70A00786E7D /* MoonX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoonX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE52B64F2A9CB70A00786E7D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		AE52B6512A9CB70A00786E7D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		AE52B6532A9CB70A00786E7D /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		AE52B6562A9CB70A00786E7D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		AE52B6582A9CB70A00786E7D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE52B65B2A9CB70A00786E7D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AE52B65D2A9CB70A00786E7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AE52B6682A9CC1AA00786E7D /* Onboarding1VC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding1VC.swift; sourceTree = "<group>"; };
+		AE52B66A2A9CC1EC00786E7D /* Onboarding2VC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding2VC.swift; sourceTree = "<group>"; };
+		AE52B66C2A9CC1F100786E7D /* Onboarding3VC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding3VC.swift; sourceTree = "<group>"; };
+		AE52B66E2A9CC6B400786E7D /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		AE52B6702A9CE4AD00786E7D /* InnApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InnApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE52B6652A9CB80200786E7D /* NeonSDK in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,15 +64,58 @@
 		AE52B64E2A9CB70A00786E7D /* MoonX */ = {
 			isa = PBXGroup;
 			children = (
-				AE52B64F2A9CB70A00786E7D /* AppDelegate.swift */,
-				AE52B6512A9CB70A00786E7D /* SceneDelegate.swift */,
+				AE52B6742A9DEC5800786E7D /* Resources */,
+				AE52B6732A9DEC0800786E7D /* Extensions */,
+				AE52B6662A9CC17300786E7D /* Secene */,
 				AE52B6532A9CB70A00786E7D /* ViewController.swift */,
-				AE52B6552A9CB70A00786E7D /* Main.storyboard */,
+			);
+			path = MoonX;
+			sourceTree = "<group>";
+		};
+		AE52B6662A9CC17300786E7D /* Secene */ = {
+			isa = PBXGroup;
+			children = (
+				AE52B6722A9DEBF900786E7D /* Paywall */,
+				AE52B6672A9CC17D00786E7D /* Onboarding */,
+			);
+			path = Secene;
+			sourceTree = "<group>";
+		};
+		AE52B6672A9CC17D00786E7D /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				AE52B6682A9CC1AA00786E7D /* Onboarding1VC.swift */,
+				AE52B66A2A9CC1EC00786E7D /* Onboarding2VC.swift */,
+				AE52B66C2A9CC1F100786E7D /* Onboarding3VC.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		AE52B6722A9DEBF900786E7D /* Paywall */ = {
+			isa = PBXGroup;
+			children = (
+				AE52B6702A9CE4AD00786E7D /* InnApp.swift */,
+			);
+			path = Paywall;
+			sourceTree = "<group>";
+		};
+		AE52B6732A9DEC0800786E7D /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				AE52B66E2A9CC6B400786E7D /* UIColor+Extension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		AE52B6742A9DEC5800786E7D /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AE52B64F2A9CB70A00786E7D /* AppDelegate.swift */,
 				AE52B6582A9CB70A00786E7D /* Assets.xcassets */,
 				AE52B65A2A9CB70A00786E7D /* LaunchScreen.storyboard */,
 				AE52B65D2A9CB70A00786E7D /* Info.plist */,
 			);
-			path = MoonX;
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -83,6 +134,9 @@
 			dependencies = (
 			);
 			name = MoonX;
+			packageProductDependencies = (
+				AE52B6642A9CB80200786E7D /* NeonSDK */,
+			);
 			productName = MoonX;
 			productReference = AE52B64C2A9CB70A00786E7D /* MoonX.app */;
 			productType = "com.apple.product-type.application";
@@ -111,6 +165,9 @@
 				Base,
 			);
 			mainGroup = AE52B6432A9CB70A00786E7D;
+			packageReferences = (
+				AE52B6632A9CB80200786E7D /* XCRemoteSwiftPackageReference "neon-sdk" */,
+			);
 			productRefGroup = AE52B64D2A9CB70A00786E7D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -127,7 +184,6 @@
 			files = (
 				AE52B65C2A9CB70A00786E7D /* LaunchScreen.storyboard in Resources */,
 				AE52B6592A9CB70A00786E7D /* Assets.xcassets in Resources */,
-				AE52B6572A9CB70A00786E7D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,23 +194,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE52B66B2A9CC1EC00786E7D /* Onboarding2VC.swift in Sources */,
 				AE52B6542A9CB70A00786E7D /* ViewController.swift in Sources */,
+				AE52B6692A9CC1AA00786E7D /* Onboarding1VC.swift in Sources */,
+				AE52B66F2A9CC6B400786E7D /* UIColor+Extension.swift in Sources */,
+				AE52B6712A9CE4AD00786E7D /* InnApp.swift in Sources */,
+				AE52B66D2A9CC1F100786E7D /* Onboarding3VC.swift in Sources */,
 				AE52B6502A9CB70A00786E7D /* AppDelegate.swift in Sources */,
-				AE52B6522A9CB70A00786E7D /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		AE52B6552A9CB70A00786E7D /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AE52B6562A9CB70A00786E7D /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		AE52B65A2A9CB70A00786E7D /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -292,7 +344,6 @@
 				INFOPLIST_FILE = MoonX/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -320,7 +371,6 @@
 				INFOPLIST_FILE = MoonX/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -358,6 +408,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AE52B6632A9CB80200786E7D /* XCRemoteSwiftPackageReference "neon-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/neon-apps/neon-sdk.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AE52B6642A9CB80200786E7D /* NeonSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AE52B6632A9CB80200786E7D /* XCRemoteSwiftPackageReference "neon-sdk" */;
+			productName = NeonSDK;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AE52B6442A9CB70A00786E7D /* Project object */;
 }
