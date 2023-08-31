@@ -11,13 +11,13 @@ import SnapKit
 
 final class Onboarding2VC: UIViewController {
 
-    var backgroundImage = UIImageView()
-    let label = UILabel()
-    let dateLabel = UILabel()
-    let timeLabel = UILabel()
-    let dateField = UITextField()
-    let timeField = UITextField()
-    let nextButton = UIButton()
+    private var backgroundImage = UIImageView()
+    private let label = UILabel()
+    private let dateLabel = UILabel()
+    private let timeLabel = UILabel()
+    private let dateField = UITextField()
+    private let timeField = UITextField()
+    private let nextButton = UIButton()
 
     override func viewDidLoad() {
         super.viewDidLoad()

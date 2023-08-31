@@ -11,12 +11,12 @@ import SnapKit
 
 final class Onboarding3VC: UIViewController {
 
-    var backgroundImage = UIImageView()
-    let label = UILabel()
-    let label2 = UILabel()
-    let placeLabel = UILabel()
-    let placeField = UITextField()
-    let nextButton = UIButton()
+    private var backgroundImage = UIImageView()
+    private let label = UILabel()
+    private let label2 = UILabel()
+    private let placeLabel = UILabel()
+    private let placeField = UITextField()
+    private let nextButton = UIButton()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -104,7 +104,7 @@ final class Onboarding3VC: UIViewController {
     }
 
     @objc private func nextButtonTapped() {
-        present(destinationVC: InnApp(), slideDirection: .right)
+        present(destinationVC: InnAppVC(), slideDirection: .right)
         Neon.onboardingCompleted()
     }
 }

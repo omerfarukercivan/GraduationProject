@@ -10,25 +10,25 @@ import NeonSDK
 import SnapKit
 
 final class Onboarding1VC: UIViewController {
-    
-    var backgroundImage = UIImageView()
-    let welcomeLabel = UILabel()
-    let label = UILabel()
-    let nextButton = UIButton()
-    
+
+    private var backgroundImage = UIImageView()
+    private let welcomeLabel = UILabel()
+    private let label = UILabel()
+    private let nextButton = UIButton()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         setupUI()
     }
-    
+
     private func setupUI() {
         backgroundImage = UIImageView(image: UIImage(named: "img_background_onboarding1"))
         view.addSubview(backgroundImage)
         backgroundImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        
+
         welcomeLabel.text = "Welcome"
         welcomeLabel.font = .systemFont(ofSize: 22)
         welcomeLabel.textColor = .white
@@ -37,7 +37,7 @@ final class Onboarding1VC: UIViewController {
             make.top.equalTo(view.snp.centerY).offset(80)
             make.centerX.equalToSuperview()
         }
-        
+
         label.text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusam. Sed ut perspt perspiciatis unde omnis iste natus error si."
         label.font = .systemFont(ofSize: 16)
         label.textColor = .white
@@ -66,7 +66,7 @@ final class Onboarding1VC: UIViewController {
             make.centerX.equalToSuperview()
         }
     }
-    
+
     @objc private func nextButtonTapped() {
         present(destinationVC: Onboarding2VC(), slideDirection: .right)
     }
