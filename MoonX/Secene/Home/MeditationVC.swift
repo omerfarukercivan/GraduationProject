@@ -72,13 +72,4 @@ final class MeditationVC: UIViewController {
             self.present(destinationVC: vc, slideDirection: .up)
         }
     }
-    
-        
-//    collectionView.didSelect = { object, indexPath in
-//        let vc = AppDetail()
-////            vc.app = self.apps[indexPath.row]
-//        vc.app = object
-//        self.navigationController?.pushViewController(vc, animated: true)
-//    }
-
 }

@@ -83,13 +83,13 @@
 		AE52B64E2A9CB70A00786E7D /* MoonX */ = {
 			isa = PBXGroup;
 			children = (
-				AE52B65D2A9CB70A00786E7D /* Info.plist */,
+				AE52B68A2AA0A92E00786E7D /* Models */,
 				AE52B6742A9DEC5800786E7D /* Resources */,
 				AE52B6732A9DEC0800786E7D /* Extensions */,
 				AE52B6662A9CC17300786E7D /* Secene */,
-				AE52B6842AA0850600786E7D /* MusicModel.swift */,
 				AE52B6862AA0863200786E7D /* MeditationCell.swift */,
 				AE52B6882AA0995B00786E7D /* PlayerVC.swift */,
+				AE52B65D2A9CB70A00786E7D /* Info.plist */,
 			);
 			path = MoonX;
 			sourceTree = "<group>";
@@ -159,6 +159,14 @@
 				AE52B6802A9E1A1F00786E7D /* StoreKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AE52B68A2AA0A92E00786E7D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AE52B6842AA0850600786E7D /* MusicModel.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -18,4 +18,5 @@ extension UIColor {
     static let mainBlack2 = UIColor(red: 18/255, green: 18/255, blue: 18/255, alpha: 0.7)
     static let someColor1 = UIColor(red: 11/255, green: 23/255, blue: 148/255, alpha: 0.5)
     static let musicView = UIColor(red: 17/255, green: 20/255, blue: 44/255, alpha: 0.5)
+    static let lightBlack = UIColor(red: 70/255, green: 70/255, blue: 70/255, alpha: 0.6)
 }
