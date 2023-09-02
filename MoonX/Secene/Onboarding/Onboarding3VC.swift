@@ -6,22 +6,39 @@
 //
 
 import UIKit
-import NeonSDK
 import SnapKit
+import NeonSDK
+import Hero
+import CoreLocation
 
 final class Onboarding3VC: UIViewController {
 
     private var backgroundImage = UIImageView()
     private let label = UILabel()
     private let label2 = UILabel()
-    private let placeLabel = UILabel()
-    private let placeField = UITextField()
+    private let locationLabel = UILabel()
+    private let locationField = UITextField()
     private let nextButton = UIButton()
+    private var locationManager = CLLocationManager()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .black
+        nextButton.hero.id = "nextButton"
 
+//        let key = "CZMGSHZDK65BQXPVXGVWW3QJ6"
+//
+//        
+//       let url =  "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/ankara?unitGroup=us&key=CZMGSHZDK65BQXPVXGVWW3QJ6&include=days&elements=datetime,moonphase,sunrise,sunset,moonset,moonrise"
+//       
+//        let url2 =  "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/ankara?unitGroup=us&key=\(key)&include=days&elements=datetime,moonphase,sunrise,sunset,moonset,moonrise"
+        
         setupUI()
+
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
     }
 
     private func setupUI() {
@@ -58,29 +75,28 @@ final class Onboarding3VC: UIViewController {
             make.centerX.equalToSuperview()
         }
 
-        placeLabel.text = "Enter Your Place of Birth"
-        placeLabel.font = .systemFont(ofSize: 16)
-        placeLabel.textColor = .white
-        placeLabel.textAlignment = .center
-        placeLabel.numberOfLines = 0
-        view.addSubview(placeLabel)
-        placeLabel.snp.makeConstraints { make in
+        locationLabel.text = "Enter Your Place of Birth"
+        locationLabel.font = .systemFont(ofSize: 16)
+        locationLabel.textColor = .white
+        locationLabel.textAlignment = .center
+        locationLabel.numberOfLines = 0
+        view.addSubview(locationLabel)
+        locationLabel.snp.makeConstraints { make in
             make.bottom.equalTo(label2.snp.bottom).offset(72)
             make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(48)
             make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(48)
             make.centerX.equalToSuperview()
         }
 
-        placeField.placeholder = "09/03/1999"
-        placeField.tintColor = .yellow
-        placeField.textColor = .white1
-        placeField.textAlignment = .center
-        placeField.borderStyle = .none
-        placeField.backgroundColor = .darkPurple
-        placeField.layer.cornerRadius = 16
-        view.addSubview(placeField)
-        placeField.snp.makeConstraints { make in
-            make.top.equalTo(placeLabel.snp.bottom).offset(8)
+        locationField.attributedPlaceholder = NSAttributedString(string: "09/03/1999", attributes: [.foregroundColor: UIColor.white1])
+        locationField.textColor = .white1
+        locationField.textAlignment = .center
+        locationField.borderStyle = .none
+        locationField.backgroundColor = .darkPurple
+        locationField.layer.cornerRadius = 16
+        view.addSubview(locationField)
+        locationField.snp.makeConstraints { make in
+            make.top.equalTo(locationLabel.snp.bottom).offset(8)
             make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(40)
             make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(40)
             make.height.equalTo(48)
@@ -100,11 +116,46 @@ final class Onboarding3VC: UIViewController {
             make.height.equalTo(48)
             make.centerX.equalToSuperview()
         }
-
     }
 
     @objc private func nextButtonTapped() {
+        let asd = locationField.text!.replacingOccurrences(of: " ", with: "")
+        UserDefaults.standard.set(asd, forKey: "location")
+        
         present(destinationVC: InnAppVC(), slideDirection: .right)
         Neon.onboardingCompleted()
+    }
+}
+
+extension Onboarding3VC: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            let geocoder = CLGeocoder()
+            geocoder.reverseGeocodeLocation(location) { placemarks, error in
+                if let error = error {
+                    print("Geocode Hatası: \(error.localizedDescription)")
+                    return
+                }
+
+                if let placemark = placemarks?.first {
+                    if let city = placemark.locality {
+                        self.locationField.text = city
+                    }
+                }
+            }
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedWhenInUse {
+            locationManager.startUpdatingLocation()
+        } else if status == .denied {
+            ShowAlert.showAlert(title: "Warning", message: "You have not allowed location access. Your location will be set to Ankara. ", viewController: self)
+            locationField.text = "Ankara"
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Konum alınamadı: \(error.localizedDescription)")
     }
 }

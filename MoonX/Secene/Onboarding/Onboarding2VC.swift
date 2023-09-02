@@ -6,8 +6,8 @@
 //
 
 import UIKit
-import NeonSDK
 import SnapKit
+import Hero
 
 final class Onboarding2VC: UIViewController {
 
@@ -15,12 +15,16 @@ final class Onboarding2VC: UIViewController {
     private let label = UILabel()
     private let dateLabel = UILabel()
     private let timeLabel = UILabel()
+    private let datePicker = UIDatePicker()
     private let dateField = UITextField()
+    private let timePicker = UIDatePicker()
     private let timeField = UITextField()
     private let nextButton = UIButton()
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .black
+        nextButton.hero.id = "nextButton"
 
         setupUI()
     }
@@ -54,13 +58,18 @@ final class Onboarding2VC: UIViewController {
             make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(40)
         }
 
-        dateField.placeholder = "09/03/1999"
-        dateField.tintColor = .yellow
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .wheels
+        datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
+
+        dateField.delegate = self
+        dateField.attributedPlaceholder = NSAttributedString(string: "09/03/1999", attributes: [.foregroundColor: UIColor.white1])
         dateField.textColor = .white1
         dateField.textAlignment = .center
         dateField.borderStyle = .none
         dateField.backgroundColor = .darkPurple
         dateField.layer.cornerRadius = 16
+        dateField.inputView = datePicker
         view.addSubview(dateField)
         dateField.snp.makeConstraints { make in
             make.top.equalTo(dateLabel.snp.bottom).offset(8)
@@ -78,13 +87,19 @@ final class Onboarding2VC: UIViewController {
             make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(40)
         }
 
-        timeField.placeholder = "09/03/1999"
-        timeField.tintColor = .yellow
+        timePicker.datePickerMode = .time
+        timePicker.preferredDatePickerStyle = .wheels
+        timePicker.locale = Locale(identifier: "tr")
+        timePicker.addTarget(self, action: #selector(timeChanged(_:)), for: .valueChanged)
+
+        timeField.delegate = self
+        timeField.attributedPlaceholder = NSAttributedString(string: "09/03/1999", attributes: [.foregroundColor: UIColor.white1])
         timeField.textColor = .white1
         timeField.textAlignment = .center
         timeField.borderStyle = .none
         timeField.backgroundColor = .darkPurple
         timeField.layer.cornerRadius = 16
+        timeField.inputView = timePicker
         view.addSubview(timeField)
         timeField.snp.makeConstraints { make in
             make.top.equalTo(timeLabel.snp.bottom).offset(8)
@@ -110,6 +125,37 @@ final class Onboarding2VC: UIViewController {
     }
 
     @objc private func nextButtonTapped() {
-        present(destinationVC: Onboarding3VC(), slideDirection: .right)
+        if !timeField.text!.isEmpty && !dateField.text!.isEmpty {
+            UserDefaults.standard.set(dateField.text, forKey: "date")
+            UserDefaults.standard.set(timeField.text, forKey: "time")
+            
+            present(destinationVC: Onboarding3VC(), slideDirection: .right)
+        }else{
+            ShowAlert.showAlert(title: "Error", message: "You must enter date and time of birth", viewController: self)
+        }
+    }
+
+    @objc func dateChanged(_ datePicker: UIDatePicker) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+        dateField.text = dateFormatter.string(from: datePicker.date)
+    }
+
+    @objc func timeChanged(_ timePicker: UIDatePicker) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        timeField.text = dateFormatter.string(from: timePicker.date)
+    }
+}
+
+extension Onboarding2VC: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == dateField {
+            datePicker.isHidden = false
+        }
+
+        if textField == timeField {
+            timePicker.isHidden = false
+        }
     }
 }

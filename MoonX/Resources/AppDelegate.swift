@@ -13,7 +13,7 @@ import RevenueCat
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         RevenueCatManager.configure(withAPIKey: "appl_InuhoMFHLXKzspBzKfdJRBroEfG", products : [
@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ])
                 
         Font.configureFonts(font: .Inter)
-        Neon.configure(window: &window, onboardingVC: Onboarding1VC(), paywallVC: InnAppVC(), homeVC: Onboarding1VC())
+        Neon.configure(window: &window, onboardingVC: Onboarding1VC(), paywallVC: InnAppVC(), homeVC: TabBarController())
 
         return true
     }

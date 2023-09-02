@@ -43,7 +43,7 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
         super.viewDidLoad()
         view.backgroundColor = .black
         RevenueCatManager.delegate = self
-
+        
         packageFetched()
         setupUI()
     }
@@ -204,7 +204,7 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
         }
 
 
-        popularImage.image = UIImage(named: "img_moon3")
+        popularImage.image = UIImage(named: "img_moon4")
         popularView.addSubview(popularImage)
         popularImage.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(2)
@@ -273,6 +273,11 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
         legalView.termsURL = "[https://www.neonapps.co/terms-of-use](https://www.neonapps.co/terms-of-use)"
         legalView.privacyURL = "[https://www.neonapps.co/privacy-policy](https://www.neonapps.co/privacy-policy)"
         legalView.restoreButtonClicked = {
+            RevenueCatManager.restorePurchases(vc: self, animation: .loadingBar) {
+                self.present(destinationVC: TabBarController(), slideDirection: .up)
+            } completionFailure: {
+                print("restore error")
+            }
         }
         legalView.textColor = .white
         view.addSubview(legalView)
@@ -286,9 +291,11 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
         if let weekly = RevenueCatManager.getPackagePrice(id: "com.neonapps.education.SwiftyStoreKitDemo.Weekly") {
             weeklyPrice.text = "\(weekly)"
         }
+        
         if let monthly = RevenueCatManager.getPackagePrice(id: "com.neonapps.education.SwiftyStoreKitDemo.Montly") {
             monthlyPrice.text = "\(monthly)"
         }
+        
         if let annual = RevenueCatManager.getPackagePrice(id: "com.neonapps.education.SwiftyStoreKitDemo.Annual") {
             annualPrice.text = "\(annual)"
         }
@@ -320,7 +327,6 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 
         purchaseButton.setTitle("Purchase for \(weeklyPrice.text!)", for: .normal)
         productID = "com.neonapps.education.SwiftyStoreKitDemo.Weekly"
-        print(productID)
     }
 
     @objc private func monthlyButtonTapped() {
@@ -339,7 +345,6 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 
         purchaseButton.setTitle("Purchase for \(monthlyPrice.text!)", for: .normal)
         productID = "com.neonapps.education.SwiftyStoreKitDemo.Montly"
-        print(productID)
     }
 
     @objc private func annualButtonTapped() {
@@ -358,16 +363,13 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 
         purchaseButton.setTitle("Purchase for \(annualPrice.text!)", for: .normal)
         productID = "com.neonapps.education.SwiftyStoreKitDemo.Annual"
-        print(productID)
     }
 
     @objc private func purchaseButtonTapped() {
         RevenueCatManager.selectPackage(id: productID)
         RevenueCatManager.purchase(animation: .loadingBar) {
-            self.present(destinationVC: HomeVC(), slideDirection: .up)
-        } completionFailure: {
-            //MARK: Failure'a düşüyor kontrol et!
             self.present(destinationVC: TabBarController(), slideDirection: .up)
+        } completionFailure: {
             print("purchase error")
         }
     }

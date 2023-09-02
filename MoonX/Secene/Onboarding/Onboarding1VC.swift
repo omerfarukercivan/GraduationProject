@@ -6,8 +6,8 @@
 //
 
 import UIKit
-import NeonSDK
 import SnapKit
+import Hero
 
 final class Onboarding1VC: UIViewController {
 
@@ -18,7 +18,9 @@ final class Onboarding1VC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .black
+        nextButton.hero.id = "nextButton"
+        
         setupUI()
     }
 

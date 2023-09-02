@@ -22,9 +22,9 @@ class TabBarController: UITabBarController {
         vc1.title = "Home"
         vc2.title = "Meditation"
         vc3.title = "Profile"
-//        tabBarController?.tabBar.layer.zPosition = -1
-//        tabBar.backgroundColor = .black
-        setViewControllers([vc2, vc1, vc3], animated: true)
+        //        tabBarController?.tabBar.layer.zPosition = -1
+        //        tabBar.backgroundColor = .black
+        setViewControllers([vc1, vc2, vc3], animated: true)
 
         if let viewControllers = viewControllers {
             for navigationController in viewControllers {

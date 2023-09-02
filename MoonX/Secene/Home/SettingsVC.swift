@@ -21,9 +21,9 @@ final class SettingsVC: UIViewController {
     private let privacyButton = UIButton()
     private let privacyImage = UIImageView()
     private let privacyLabel = UILabel()
-    private let termButton = UIButton()
-    private let termImage = UIImageView()
-    private let termLabel = UILabel()
+    private let termsButton = UIButton()
+    private let termsImage = UIImageView()
+    private let termsLabel = UILabel()
     private let restoreButton = UIButton()
     private let restoreImage = UIImageView()
     private let restoreLabel = UILabel()
@@ -37,7 +37,7 @@ final class SettingsVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
-
+        
         setupUI()
     }
 
@@ -52,6 +52,7 @@ final class SettingsVC: UIViewController {
         }
 
         backButton.setImage(UIImage(named: "btn_back"), for: .normal)
+        backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchDown)
         view.addSubview(backButton)
         backButton.snp.makeConstraints { make in
             make.centerY.equalTo(settingsLabel.snp.centerY)
@@ -59,6 +60,8 @@ final class SettingsVC: UIViewController {
         }
 
         premiumButton.setImage(UIImage(named: "img_premium_banner"), for: .normal)
+        premiumButton.isHidden = false
+        premiumButton.addTarget(self, action: #selector(premiumButtonTapped), for: .touchDown)
         view.addSubview(premiumButton)
         premiumButton.snp.makeConstraints { make in
             make.top.equalTo(settingsLabel.snp.bottom).offset(24)
@@ -80,8 +83,6 @@ final class SettingsVC: UIViewController {
 
         premiumLabel1.text = "Get Premium \n to Access All Contents!"
         premiumLabel1.textColor = .white
-//        premiumLabel1.layer.borderColor = UIColor.white.cgColor
-//        premiumLabel1.layer.borderWidth = 1
         premiumLabel1.numberOfLines = 0
         premiumLabel1.font = .systemFont(ofSize: 24)
         premiumView.addSubview(premiumLabel1)
@@ -107,14 +108,30 @@ final class SettingsVC: UIViewController {
             make.right.equalToSuperview().offset(-8)
         }
 
-        privacyButton.backgroundColor = .darkPurple
-        privacyButton.layer.cornerRadius = 10
-        view.addSubview(privacyButton)
-        privacyButton.snp.makeConstraints { make in
-            make.top.equalTo(premiumButton.snp.bottom).offset(16)
-            make.left.equalToSuperview().offset(32)
-            make.right.equalToSuperview().offset(-32)
-            make.height.equalTo(privacyButton.snp.width).multipliedBy(0.2)
+        if Neon.isUserPremium {
+            premiumButton.isHidden = true
+            
+            privacyButton.backgroundColor = .darkPurple
+            privacyButton.layer.cornerRadius = 10
+            privacyButton.addTarget(self, action: #selector(privacyButtonTapped), for: .touchDown)
+            view.addSubview(privacyButton)
+            privacyButton.snp.makeConstraints { make in
+                make.top.equalTo(settingsLabel.snp.bottom).offset(16)
+                make.left.equalToSuperview().offset(32)
+                make.right.equalToSuperview().offset(-32)
+                make.height.equalTo(privacyButton.snp.width).multipliedBy(0.2)
+            }
+        } else {
+            privacyButton.backgroundColor = .darkPurple
+            privacyButton.layer.cornerRadius = 10
+            privacyButton.addTarget(self, action: #selector(privacyButtonTapped), for: .touchDown)
+            view.addSubview(privacyButton)
+            privacyButton.snp.makeConstraints { make in
+                make.top.equalTo(premiumButton.snp.bottom).offset(16)
+                make.left.equalToSuperview().offset(32)
+                make.right.equalToSuperview().offset(-32)
+                make.height.equalTo(privacyButton.snp.width).multipliedBy(0.2)
+            }
         }
 
         privacyImage.image = UIImage(named: "img_privacy")
@@ -132,36 +149,37 @@ final class SettingsVC: UIViewController {
             make.left.equalTo(privacyImage.snp.right).offset(16)
         }
 
-        termButton.backgroundColor = .darkPurple
-        termButton.layer.cornerRadius = 10
-        view.addSubview(termButton)
-        termButton.snp.makeConstraints { make in
+        termsButton.backgroundColor = .darkPurple
+        termsButton.layer.cornerRadius = 10
+        termsButton.addTarget(self, action: #selector(termsButtonTapped), for: .touchDown)
+        view.addSubview(termsButton)
+        termsButton.snp.makeConstraints { make in
             make.top.equalTo(privacyButton.snp.bottom).offset(8)
             make.left.equalToSuperview().offset(32)
             make.right.equalToSuperview().offset(-32)
             make.height.equalTo(privacyButton.snp.width).multipliedBy(0.2)
         }
 
-        termImage.image = UIImage(named: "img_terms")
-        termButton.addSubview(termImage)
-        termImage.snp.makeConstraints { make in
+        termsImage.image = UIImage(named: "img_terms")
+        termsButton.addSubview(termsImage)
+        termsImage.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
             make.left.equalToSuperview().offset(16)
         }
 
-        termLabel.text = "Terms of Use"
-        termLabel.textColor = .white
-        termButton.addSubview(termLabel)
-        termLabel.snp.makeConstraints { make in
+        termsLabel.text = "Terms of Use"
+        termsLabel.textColor = .white
+        termsButton.addSubview(termsLabel)
+        termsLabel.snp.makeConstraints { make in
             make.centerY.equalToSuperview()
-            make.left.equalTo(termImage.snp.right).offset(16)
+            make.left.equalTo(termsImage.snp.right).offset(16)
         }
 
         restoreButton.backgroundColor = .darkPurple
         restoreButton.layer.cornerRadius = 10
         view.addSubview(restoreButton)
         restoreButton.snp.makeConstraints { make in
-            make.top.equalTo(termButton.snp.bottom).offset(8)
+            make.top.equalTo(termsButton.snp.bottom).offset(8)
             make.left.equalToSuperview().offset(32)
             make.right.equalToSuperview().offset(-32)
             make.height.equalTo(privacyButton.snp.width).multipliedBy(0.2)
@@ -231,5 +249,21 @@ final class SettingsVC: UIViewController {
             make.centerY.equalToSuperview()
             make.left.equalTo(rateImage.snp.right).offset(16)
         }
+    }
+    
+    @objc private func premiumButtonTapped() {
+        present(destinationVC: InnAppVC(), slideDirection: .up)
+    }
+    
+    @objc private func privacyButtonTapped() {
+        UIApplication.shared.open(URL(string: "https://www.neonapps.co/privacy-policy")!)
+    }
+    
+    @objc private func termsButtonTapped() {
+        UIApplication.shared.open(URL(string: "https://www.neonapps.co/terms-of-use")!)
+    }
+    
+    @objc private func backButtonTapped() {
+        tabBarController?.selectedIndex = 0
     }
 }

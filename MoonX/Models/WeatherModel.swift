@@ -6,3 +6,16 @@
 //
 
 import Foundation
+
+struct WeatherModel: Codable {
+    let resolvedAddress: String?
+//    let days: [Days]
+}
+
+struct Days: Codable {
+    let sunrise: String?
+    let sunset: String?
+    let moonrise: String?
+    let moonset: String?
+    let temp: Float?
+}

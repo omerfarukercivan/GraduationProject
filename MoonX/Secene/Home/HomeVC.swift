@@ -8,6 +8,8 @@
 import UIKit
 import NeonSDK
 import SnapKit
+import Alamofire
+import ChatGPTSwift
 
 final class HomeVC: UIViewController, UIScrollViewDelegate {
 
@@ -15,7 +17,8 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
     private let contentView = UIView()
     private let stackView = UIStackView()
     private let backgroundImage = UIImageView()
-    private let dateButton = UIButton()
+    private let calenderButton = UIButton()
+    private let calender = UIDatePicker()
     private let label = UILabel()
     private let locationLabel = UILabel()
     private let image = UIImageView()
@@ -34,11 +37,12 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
     private let sun1Label = UILabel()
     private let sun2Label = UILabel()
     private let label2 = UILabel()
-    private let horoscopeView = UIImageView()
+    private let horoscopeButton = UIButton()
     private let horoscopeImage = UIImageView()
     private let horoscopeName = UILabel()
     private let label3 = UILabel()
     private let horoscopeView2 = UIView()
+    private let horoscopeLoading = LottieManager.createLottie(animation: .loadingCircle3)
     private let horoscopeLabel = UILabel()
     private let tipLabel = UILabel()
     private let stackView2 = UIStackView()
@@ -53,14 +57,26 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
     private let foodLabel = UILabel()
     private let relationsLabel = UILabel()
     private let horoscopeView3 = UIView()
-    private let selectedTipImage = UIImageView()
+    private var selectedTipImage = UIImageView()
+    private let selectedHoroscopeLoading = LottieManager.createLottie(animation: .loadingCircle3)
     private let selectedTipLabel = UILabel()
     private let selectedTipHoroscope = UILabel()
+
+    private let gptApi = ChatGPTAPI(apiKey: "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")
+//    private var isCalenderOpen = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .black
 
+        let key = "CZMGSHZDK65BQXPVXGVWW3QJ6"
+        let adress = UserDefaults.standard.value(forKey: "location")! as! String
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let date = dateFormatter.string(from: Date())
+
+        fetchWeatherData(adress: adress, date: date, key: key)
         setupUI()
     }
 
@@ -76,7 +92,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalToSuperview()
-            make.height.equalToSuperview().multipliedBy(2)
+            make.height.equalToSuperview().multipliedBy(2.1)
         }
 
         backgroundImage.image = UIImage(named: "img_background_home")
@@ -85,15 +101,29 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
             make.top.equalToSuperview()
         }
 
-        dateButton.setTitle("2 Aug 2023", for: .normal)
-        dateButton.setTitleColor(.darkPurple, for: .normal)
-        dateButton.backgroundColor = .lightPurple2
-        dateButton.layer.cornerRadius = 10
-        contentView.addSubview(dateButton)
-        dateButton.snp.makeConstraints { make in
+        //MARK: date işlemleri
+
+        calenderButton.setTitle("2 Aug 2023", for: .normal)
+        calenderButton.setTitleColor(.lightPurple2, for: .normal)
+        calenderButton.backgroundColor = .dateButton
+        calenderButton.layer.cornerRadius = 10
+        calenderButton.addTarget(self, action: #selector(calenderButtonTapped), for: .touchDown)
+        contentView.addSubview(calenderButton)
+        calenderButton.snp.makeConstraints { make in
             make.top.equalTo(contentView.snp.top)
             make.right.equalTo(contentView.snp.right).inset(8)
             make.width.equalTo(100)
+        }
+
+        calender.datePickerMode = .date
+        calender.preferredDatePickerStyle = .inline
+
+        calender.isHidden = true
+        contentView.addSubview(calender)
+        calender.snp.makeConstraints { make in
+            make.top.equalTo(calenderButton.snp.bottom).offset(24)
+            make.left.equalToSuperview().offset(16)
+            make.right.equalToSuperview().offset(-16)
         }
 
         label.text = "Good Morning!"
@@ -101,7 +131,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
         label.textColor = .white
         contentView.addSubview(label)
         label.snp.makeConstraints { make in
-            make.bottom.equalTo(dateButton.snp.bottom)
+            make.bottom.equalTo(calenderButton.snp.bottom)
             make.centerX.equalToSuperview()
         }
 
@@ -121,7 +151,10 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
             make.centerX.equalToSuperview()
         }
 
-        dateLabel.text = "2 May 11.49"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d MMM HH.mm"
+
+        dateLabel.text = dateFormatter.string(from: Date())
         dateLabel.textColor = .white
         contentView.addSubview(dateLabel)
         dateLabel.snp.makeConstraints { make in
@@ -129,7 +162,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
             make.centerX.equalToSuperview()
         }
 
-        weatherLabel.text = "Sunny , 17 C"
         weatherLabel.textColor = .white
         weatherLabel.font = .systemFont(ofSize: 14)
         contentView.addSubview(weatherLabel)
@@ -163,7 +195,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
             make.centerY.equalToSuperview()
         }
 
-        moon1Label.text = "04.34"
         moon1Label.textColor = .white
         moon1View.addSubview(moon1Label)
         moon1Label.snp.makeConstraints { make in
@@ -186,7 +217,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
             make.centerY.equalToSuperview()
         }
 
-        moon2Label.text = "16.39"
         moon2Label.textColor = .white
         moon2View.addSubview(moon2Label)
         moon2Label.snp.makeConstraints { make in
@@ -209,7 +239,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
             make.centerY.equalToSuperview()
         }
 
-        sun1Label.text = "06.01"
         sun1Label.textColor = .white
         sun1View.addSubview(sun1Label)
         sun1Label.snp.makeConstraints { make in
@@ -232,7 +261,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
             make.centerY.equalToSuperview()
         }
 
-        sun2Label.text = "06.01"
         sun2Label.textColor = .white
         sun2View.addSubview(sun2Label)
         sun2Label.snp.makeConstraints { make in
@@ -249,25 +277,26 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
             make.left.equalToSuperview().offset(16)
         }
 
-        horoscopeView.image = UIImage(named: "img_horoscopeBanner")
-        contentView.addSubview(horoscopeView)
-        horoscopeView.snp.makeConstraints { make in
+        horoscopeButton.setImage(UIImage(named: "img_horoscopeBanner"), for: .normal)
+        horoscopeButton.addTarget(self, action: #selector(horoscopeButtonTapped), for: .touchDown)
+        contentView.addSubview(horoscopeButton)
+        horoscopeButton.snp.makeConstraints { make in
             make.top.equalTo(label2.snp.bottom).offset(8)
             make.right.equalToSuperview().offset(-16)
             make.left.equalToSuperview().offset(16)
         }
 
         horoscopeImage.image = UIImage(named: "img_aries")
-        horoscopeView.addSubview(horoscopeImage)
+        horoscopeButton.addSubview(horoscopeImage)
         horoscopeImage.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(24)
             make.centerY.equalToSuperview()
         }
 
-        horoscopeName.text = "Aries"
+        horoscopeName.text = findZodiacSign(for: UserDefaults.standard.value(forKey: "date")! as! String)
         horoscopeName.textColor = .white
         horoscopeName.font = .systemFont(ofSize: 22)
-        contentView.addSubview(horoscopeName)
+        horoscopeButton.addSubview(horoscopeName)
         horoscopeName.snp.makeConstraints { make in
             make.top.equalTo(horoscopeImage.snp.top)
             make.left.equalTo(horoscopeImage.snp.right).offset(20)
@@ -286,13 +315,21 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
         horoscopeView2.layer.cornerRadius = 10
         contentView.addSubview(horoscopeView2)
         horoscopeView2.snp.makeConstraints { make in
-            make.top.equalTo(horoscopeView.snp.bottom).offset(16)
+            make.top.equalTo(horoscopeButton.snp.bottom).offset(16)
             make.left.equalToSuperview().offset(16)
             make.right.equalToSuperview().offset(-16)
-            make.height.equalTo(horoscopeView2.snp.width)
+            make.height.equalTo(horoscopeView2.snp.width).multipliedBy(1.5)
         }
 
-        horoscopeLabel.text = "Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit ontacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit"
+        horoscopeLoading.isHidden = true
+        horoscopeLoading.stop()
+        horoscopeView2.addSubview(horoscopeLoading)
+        horoscopeLoading.snp.makeConstraints { make in
+            make.centerX.centerY.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.2)
+            make.height.equalToSuperview().multipliedBy(0.2)
+        }
+
         horoscopeLabel.textColor = .white
         horoscopeLabel.numberOfLines = 0
         horoscopeView2.addSubview(horoscopeLabel)
@@ -355,6 +392,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
         foodButton.backgroundColor = .orange
         foodButton.layer.cornerRadius = 10
+        foodButton.addTarget(self, action: #selector(foodButtonTapped), for: .touchDown)
         stackView2.addArrangedSubview(foodButton)
         foodButton.snp.makeConstraints { make in
             make.width.equalToSuperview().multipliedBy(0.3)
@@ -377,6 +415,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
         relationsButton.backgroundColor = .systemPink
         relationsButton.layer.cornerRadius = 10
+        relationsButton.addTarget(self, action: #selector(relationsButtonTapped), for: .touchDown)
         stackView2.addArrangedSubview(relationsButton)
         relationsButton.snp.makeConstraints { make in
             make.width.equalToSuperview().multipliedBy(0.3)
@@ -409,14 +448,23 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
             make.height.equalTo(horoscopeView3.snp.width).multipliedBy(1.5)
         }
 
-        selectedTipImage.image = UIImage(named: "img_business2")
         horoscopeView3.addSubview(selectedTipImage)
         selectedTipImage.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(16)
             make.left.equalToSuperview().offset(24)
+            make.width.equalToSuperview().multipliedBy(0.15)
+            make.height.equalTo(selectedTipImage.snp.width)
         }
 
-        selectedTipLabel.text = "Business"
+        selectedHoroscopeLoading.isHidden = true
+        selectedHoroscopeLoading.stop()
+        horoscopeView3.addSubview(selectedHoroscopeLoading)
+        selectedHoroscopeLoading.snp.makeConstraints { make in
+            make.centerX.centerY.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.2)
+            make.height.equalToSuperview().multipliedBy(0.2)
+        }
+
         selectedTipLabel.textColor = .white
         horoscopeView3.addSubview(selectedTipLabel)
         selectedTipLabel.snp.makeConstraints { make in
@@ -424,7 +472,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
             make.centerY.equalTo(selectedTipImage.snp.centerY)
         }
 
-        selectedTipHoroscope.text = "Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profitPlan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and meetings in accordance with the lunar events to gain the most profit. Plan your negotiations, contacts and"
         selectedTipHoroscope.textColor = .white
         selectedTipHoroscope.numberOfLines = 0
         horoscopeView3.addSubview(selectedTipHoroscope)
@@ -434,10 +481,214 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
             make.left.equalToSuperview().offset(16)
             make.bottom.equalToSuperview().offset(-16)
         }
+    }
 
+    func fetchWeatherData(adress: String, date: String, key: String) {
+        let url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/\(adress)/\(date)?unitGroup=metric&key=\(key)&include=days&elements=datetime,sunrise,sunset,moonset,moonrise,temp,conditions"
+
+        AF.request(url, method: .get).responseJSON { response in
+            switch response.result {
+            case .success(let value):
+                if let json = value as? [String: Any], let days = json["days"] as? [[String: Any]] {
+                    self.locationLabel.text = (json["resolvedAddress"] as! String)
+
+                    for dayData in days {
+                        self.moon1Label.text = self.convertTimeFormat(dayData["moonset"]! as! String)
+                        self.moon2Label.text = self.convertTimeFormat(dayData["moonrise"]! as! String)
+                        self.sun1Label.text = self.convertTimeFormat(dayData["sunset"]! as! String)
+                        self.sun2Label.text = self.convertTimeFormat(dayData["sunrise"]! as! String)
+                        self.weatherLabel.text = "\((dayData["conditions"]! as! String)) , \((dayData["temp"]! as! NSNumber).stringValue) C"
+                    }
+                }
+            case .failure(let error):
+                print("Veri çekme hatası: \(error)")
+            }
+        }
+    }
+
+    func convertTimeFormat(_ timeString: String) -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm:ss"
+
+        if let date = dateFormatter.date(from: timeString) {
+            dateFormatter.dateFormat = "HH.mm"
+            let formattedTime = dateFormatter.string(from: date)
+            return formattedTime
+        }
+
+        return nil
     }
 
     @objc private func businesButtonTapped() {
-        print("sa")
+        selectedTipLabel.text = ""
+        selectedTipHoroscope.text = ""
+        selectedTipImage.isHidden = true
+        selectedHoroscopeLoading.isHidden = false
+        selectedHoroscopeLoading.play()
+
+        Task {
+            do {
+                let response = try await gptApi.sendMessage(text: "If I am a \(horoscopeName.text!), pretend you are a fortune teller, please generate my horoscope for today for business. Please try to limit it 100 words")
+                selectedHoroscopeLoading.stop()
+                selectedHoroscopeLoading.isHidden = true
+                selectedTipImage.isHidden = false
+
+                selectedTipImage.image = UIImage(named: "img_business2")
+                selectedTipLabel.text = "Business"
+                selectedTipHoroscope.text = response
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+
+    @objc private func foodButtonTapped() {
+        selectedTipLabel.text = ""
+        selectedTipHoroscope.text = ""
+        selectedTipImage.isHidden = true
+        selectedHoroscopeLoading.isHidden = false
+        selectedHoroscopeLoading.play()
+
+        Task {
+            do {
+                let response = try await gptApi.sendMessage(text: "If I am a \(horoscopeName.text!), pretend you are a fortune teller, please generate my horoscope for today for food. Please try to limit it 100 words")
+                selectedHoroscopeLoading.stop()
+                selectedHoroscopeLoading.isHidden = true
+                selectedTipImage.isHidden = false
+
+                selectedTipImage.image = UIImage(named: "img_food")
+                selectedTipLabel.text = "Food"
+                selectedTipHoroscope.text = response
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+
+    @objc private func relationsButtonTapped() {
+        selectedTipLabel.text = ""
+        selectedTipHoroscope.text = ""
+        selectedTipImage.isHidden = true
+        selectedHoroscopeLoading.isHidden = false
+        selectedHoroscopeLoading.play()
+
+        Task {
+            do {
+                let response = try await gptApi.sendMessage(text: "If I am a \(horoscopeName.text!), pretend you are a fortune teller, please generate my horoscope for today for horoscope. Please try to limit it 100 words")
+                selectedHoroscopeLoading.stop()
+                selectedHoroscopeLoading.isHidden = true
+                selectedTipImage.isHidden = false
+
+                selectedTipImage.image = UIImage(named: "img_relations")
+                selectedTipLabel.text = "Relations"
+                selectedTipHoroscope.text = response
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+
+    @objc private func horoscopeButtonTapped() {
+        horoscopeLabel.text = ""
+        horoscopeLoading.isHidden = false
+        horoscopeLoading.play()
+
+        Task {
+            do {
+                let response = try await gptApi.sendMessage(text: "If I am a \(horoscopeName.text!), pretend you are a fortune teller, please generate my horoscope for today. Please try to limit it 130 words")
+                horoscopeLoading.stop()
+                horoscopeLoading.isHidden = true
+
+                horoscopeLabel.text = response
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    private var isCalenderOpen = false
+
+    @objc private func calenderButtonTapped() {
+        if isCalenderOpen {
+            calender.isHidden = true
+//            label.isHidden = false
+//            locationLabel.isHidden = false
+//            image.isHidden = false
+//            dateLabel.isHidden = false
+//            weatherLabel.isHidden = false
+//            moon1View.isHidden = false
+//            moon2View.isHidden = false
+//            sun1View.isHidden = false
+//            sun2View.isHidden = false
+//            moon1Image.isHidden = false
+//            moon2Image.isHidden = false
+//            sun1Image.isHidden = false
+//            sun2Image.isHidden = false
+//            moon1Label.isHidden = false
+//            moon2Label.isHidden = false
+//            sun1Label.isHidden = false
+//            sun2Label.isHidden = false
+        } else {
+            calender.isHidden = false
+//            label.isHidden = true
+//            locationLabel.isHidden = true
+//            image.isHidden = true
+//            dateLabel.isHidden = true
+//            weatherLabel.isHidden = true
+//            moon1View.isHidden = true
+//            moon2View.isHidden = true
+//            sun1View.isHidden = true
+//            sun2View.isHidden = true
+//            moon1Image.isHidden = true
+//            moon2Image.isHidden = true
+//            sun1Image.isHidden = true
+//            sun2Image.isHidden = true
+//            moon1Label.isHidden = true
+//            moon2Label.isHidden = true
+//            sun1Label.isHidden = true
+//            sun2Label.isHidden = true
+        }
+        
+        isCalenderOpen.toggle()
+    }
+
+    func findZodiacSign(for dateOfBirth: String) -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd/MM/yyyy"
+
+        if let birthDate = dateFormatter.date(from: dateOfBirth) {
+            let components = Calendar.current.dateComponents([.day, .month], from: birthDate)
+
+            if let day = components.day, let month = components.month {
+                switch (day, month) {
+                case (21...31, 3), (1...19, 4):
+                    return "Aries"
+                case (20...30, 4), (1...20, 5):
+                    return "Taurus"
+                case (21...31, 5), (1...20, 6):
+                    return "Gemini"
+                case (21...30, 6), (1...22, 7):
+                    return "Cancer"
+                case (23...31, 7), (1...22, 8):
+                    return "Leo"
+                case (23...31, 8), (1...22, 9):
+                    return "Virgo"
+                case (23...30, 9), (1...22, 10):
+                    return "Libra"
+                case (23...31, 10), (1...21, 11):
+                    return "Scorpio"
+                case (22...30, 11), (1...19, 12):
+                    return "Sagittarius"
+                case (20...31, 12), (1...19, 1):
+                    return "Capricorn"
+                case (20...31, 1), (1...18, 2):
+                    return "Aquarius"
+                default:
+                    return "Pisces"
+                }
+            }
+        }
+
+        return nil
     }
 }
