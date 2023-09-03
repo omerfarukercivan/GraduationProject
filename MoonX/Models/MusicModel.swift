@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MusicModel {
+struct MusicModel: Codable {
 	let music: URL
 	let musicName: String
 	let artistName: String

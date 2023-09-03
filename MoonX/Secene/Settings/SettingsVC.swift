@@ -111,6 +111,8 @@ final class SettingsVC: UIViewController {
 		if Neon.isUserPremium {
 			premiumButton.isHidden = true
 
+			print("premium")
+
 			privacyButton.backgroundColor = .darkPurple
 			privacyButton.layer.cornerRadius = 10
 			privacyButton.addTarget(self, action: #selector(privacyButtonTapped), for: .touchDown)
@@ -122,6 +124,8 @@ final class SettingsVC: UIViewController {
 				make.height.equalTo(privacyButton.snp.width).multipliedBy(0.2)
 			}
 		} else {
+			print("fakir")
+
 			privacyButton.backgroundColor = .darkPurple
 			privacyButton.layer.cornerRadius = 10
 			privacyButton.addTarget(self, action: #selector(privacyButtonTapped), for: .touchDown)

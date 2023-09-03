@@ -67,7 +67,7 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 			make.centerX.equalToSuperview()
 		}
 
-		closeButton.setImage(UIImage(systemName: "xmark"), for: .normal)
+		closeButton.setImage(UIImage(named: "btn_close"), for: .normal)
 		closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchDown)
 		closeButton.contentMode = .scaleAspectFit
 		view.addSubview(closeButton)

@@ -13,10 +13,12 @@ import AVFAudio
 final class MeditationVC: UIViewController {
 
 	private let backButton = UIButton()
-	private var collectionView = NeonCollectionView<MusicModel, MeditationCell>()
 	private var musicSegment: UISegmentedControl!
+	private var musicTitle = UILabel()
+	private var collectionView = NeonCollectionView<MusicModel, MeditationCell>()
+
 	private var musics = [MusicModel]()
-	var filteredMusic = [MusicModel]()
+	private var filteredMusic = [MusicModel]()
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -24,6 +26,10 @@ final class MeditationVC: UIViewController {
 
 		musicAppend()
 		setupUI()
+	}
+
+	override func viewWillAppear(_ animated: Bool) {
+		musicSegmentValueChanged()
 	}
 
 	private func setupUI() {
@@ -50,6 +56,14 @@ final class MeditationVC: UIViewController {
 			make.right.equalToSuperview().offset(-24)
 		}
 
+		musicTitle.textColor = .white
+		musicTitle.font = .systemFont(ofSize: 22)
+		view.addSubview(musicTitle)
+		musicTitle.snp.makeConstraints { make in
+			make.top.equalTo(musicSegment.snp.bottom).offset(24)
+			make.left.equalToSuperview().offset(16)
+		}
+
 		collectionView = NeonCollectionView<MusicModel, MeditationCell>(
 			objects: filteredMusic,
 			itemsPerRow: 2,
@@ -62,7 +76,7 @@ final class MeditationVC: UIViewController {
 		collectionView.backgroundColor = .black
 		view.addSubview(collectionView)
 		collectionView.snp.makeConstraints { make in
-			make.top.equalTo(musicSegment.snp.bottom).offset(48)
+			make.top.equalTo(musicTitle.snp.bottom).offset(24)
 			make.right.left.bottom.equalToSuperview()
 		}
 
@@ -70,6 +84,7 @@ final class MeditationVC: UIViewController {
 			let vc = PlayerVC()
 			vc.music = object
 			vc.filteredMusic = self.filteredMusic
+
 			self.present(destinationVC: vc, slideDirection: .up)
 		}
 	}
@@ -104,6 +119,14 @@ final class MeditationVC: UIViewController {
 	}
 
 	@objc private func musicSegmentValueChanged() {
+		if musicSegment.selectedSegmentIndex == 0 {
+			musicTitle.text = "Feng Shui"
+		} else if musicSegment.selectedSegmentIndex == 1 {
+			musicTitle.text = "Yoga"
+		} else {
+			musicTitle.text = "Mantras"
+		}
+
 		filteredMusic = musics.filter({ $0.segment == musicSegment.selectedSegmentIndex })
 		collectionView.objects = filteredMusic
 	}

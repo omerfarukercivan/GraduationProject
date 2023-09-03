@@ -16,7 +16,7 @@ class PlayerVC: UIViewController {
 	private let closeButton = UIButton()
 	private let nameLabel = UILabel()
 	private let currentTimeSlider = UISlider()
-	private let cureentTimeLabel = UILabel()
+	private let currentTimeLabel = UILabel()
 	private let durationLabel = UILabel()
 	private let refreshButton = UIButton()
 	private let backButton = UIButton()
@@ -26,14 +26,21 @@ class PlayerVC: UIViewController {
 
 	var music: MusicModel!
 	var filteredMusic = [MusicModel]()
-	var currentTime: Double!
+	var favMusic: [MusicModel] = []
+
+	var currentTime: Double! = 0
 	var audioPlayer: AVAudioPlayer?
+	var isPlay = true
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
 
 		musicPlay(music: music.music)
 		Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateSlider), userInfo: nil, repeats: true)
+
+		currentTime = 0
+
+		favMusic2()
 
 		setupUI()
 	}
@@ -101,10 +108,10 @@ class PlayerVC: UIViewController {
 			make.centerY.equalTo(view.snp.centerY).multipliedBy(1.6)
 		}
 
-		cureentTimeLabel.textColor = .white
-		cureentTimeLabel.font = .systemFont(ofSize: 14)
-		view.addSubview(cureentTimeLabel)
-		cureentTimeLabel.snp.makeConstraints { make in
+		currentTimeLabel.textColor = .white
+		currentTimeLabel.font = .systemFont(ofSize: 14)
+		view.addSubview(currentTimeLabel)
+		currentTimeLabel.snp.makeConstraints { make in
 			make.left.equalToSuperview().offset(8)
 			make.centerY.equalTo(view.snp.centerY).multipliedBy(1.6)
 		}
@@ -132,9 +139,11 @@ class PlayerVC: UIViewController {
 		do {
 			audioPlayer = try AVAudioPlayer(contentsOf: music)
 
-			if currentTime != nil {
-				audioPlayer?.currentTime = currentTime
-			}
+//			if currentTime != nil {
+//				audioPlayer?.currentTime = currentTime
+//			}
+
+			audioPlayer?.currentTime = currentTime
 
 			audioPlayer!.prepareToPlay()
 
@@ -148,7 +157,10 @@ class PlayerVC: UIViewController {
 		} catch {
 			print("Ses çalarken bir hata oluştu: \(error.localizedDescription)")
 		}
-		audioPlayer?.play()
+
+		if isPlay {
+			audioPlayer?.play()
+		}
 	}
 
 	@objc private func closeButtonTapped() {
@@ -158,14 +170,18 @@ class PlayerVC: UIViewController {
 		vc.filteredMusic = self.filteredMusic
 		vc.currentTime = self.audioPlayer?.currentTime
 
+		self.isPlay = false
+
 		if let player = audioPlayer {
 			if player.isPlaying {
 				player.stop()
+				vc.isPlay = true
+			} else {
+				vc.isPlay = false
 			}
 		}
 
 		present(destinationVC: vc, slideDirection: .down)
-
 	}
 
 	@objc private func playPauseButtonTapped() {
@@ -189,6 +205,7 @@ class PlayerVC: UIViewController {
 		audioPlayer?.stop()
 		musicPlay(music: music.music)
 		nameLabel.text = music.musicName
+		currentTime = 0
 	}
 
 	@objc private func nextButtonTapped() {
@@ -196,6 +213,7 @@ class PlayerVC: UIViewController {
 		audioPlayer?.stop()
 		musicPlay(music: music.music)
 		nameLabel.text = music.musicName
+		currentTime = 0
 	}
 
 	fileprivate func changeTrack(moveForward: Bool) {
@@ -218,7 +236,7 @@ class PlayerVC: UIViewController {
 		let second = totalSecond.truncatingRemainder(dividingBy: 60)
 
 		currentTimeSlider.value = Float(audioPlayer!.currentTime)
-		cureentTimeLabel.text = String(format: "%02d:%02d", minutes, Int(second))
+		currentTimeLabel.text = String(format: "%02d:%02d", minutes, Int(second))
 	}
 
 	@objc private func sliderValueChanged() {
@@ -229,6 +247,28 @@ class PlayerVC: UIViewController {
 	}
 
 	@objc private func favButtonTapped() {
-		print("sa")
+		if !favMusic.contains(where: { $0.musicName == music.musicName && $0.segment == music.segment }) {
+			favMusic.append(music)
+
+			do {
+				let encodedData = try JSONEncoder().encode(favMusic)
+				UserDefaults.standard.set(encodedData, forKey: "favMusic")
+			} catch {
+				print("Dizi kodlanamadı: \(error)")
+			}
+		}
+		print("\(favMusic.map({ $0.musicName })), \(favMusic.map({ $0.segment }))")
+	}
+
+	private func favMusic2() {
+		if let storedData = UserDefaults.standard.data(forKey: "favMusic") {
+			do {
+				let decodedData = try JSONDecoder().decode([MusicModel].self, from: storedData)
+
+				favMusic = decodedData
+			} catch {
+				print("Dizi çözülemedi: \(error)")
+			}
+		}
 	}
 }

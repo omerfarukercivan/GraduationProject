@@ -84,6 +84,8 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 	var music: MusicModel!
 	var filteredMusic = [MusicModel]()
 	var currentTime: Double!
+	var isPlay = false
+
 	private var audioPlayer: AVAudioPlayer?
 
 	override func viewDidLoad() {
@@ -108,10 +110,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 			Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateSlider), userInfo: nil, repeats: true)
 		}
-
-		print("music: \(music)")
-		print("currentTime: \(currentTime)")
-
+		
 		setupUI()
 	}
 
@@ -200,7 +199,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.height.equalTo(tabbar.snp.width).multipliedBy(0.2)
 		}
 
-		miniPlayPause.setImage(UIImage(systemName: "heart"), for: .normal)
+		miniPlayPause.setImage(UIImage(named: "btn_pause2"), for: .normal)
 		miniPlayPause.addTarget(self, action: #selector(miniPlayPauseTapped), for: .touchDown)
 		miniView.addSubview(miniPlayPause)
 		miniPlayPause.snp.makeConstraints { make in
@@ -225,7 +224,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.left.equalTo(miniPlayPause.snp.right).offset(16)
 		}
 
-		miniCloseButton.setImage(UIImage(systemName: "xmark"), for: .normal)
+		miniCloseButton.setImage(UIImage(named: "btn_close2"), for: .normal)
 		miniCloseButton.addTarget(self, action: #selector(miniCloseButtonTapped), for: .touchDown)
 		miniView.addSubview(miniCloseButton)
 		miniCloseButton.snp.makeConstraints { make in
@@ -962,7 +961,8 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			} catch {
 				print("Ses çalarken bir hata oluştu: \(error.localizedDescription)")
 			}
-			if PlayerVC().audioPlayer?.isPlaying == true {
+
+			if isPlay {
 				audioPlayer?.play()
 			}
 
@@ -992,6 +992,9 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		if let player = audioPlayer {
 			if player.isPlaying {
 				player.stop()
+				vc.isPlay = true
+			} else {
+				vc.isPlay = false
 			}
 		}
 
