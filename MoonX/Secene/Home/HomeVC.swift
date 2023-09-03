@@ -63,7 +63,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
     private let selectedTipHoroscope = UILabel()
 
     private let gptApi = ChatGPTAPI(apiKey: "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")
-//    private var isCalenderOpen = false
+    private var isCalenderOpen = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -117,7 +117,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
         calender.datePickerMode = .date
         calender.preferredDatePickerStyle = .inline
-
+        calender.backgroundColor = .lightBlack
         calender.isHidden = true
         contentView.addSubview(calender)
         calender.snp.makeConstraints { make in
@@ -605,50 +605,60 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
             }
         }
     }
-    
-    private var isCalenderOpen = false
 
     @objc private func calenderButtonTapped() {
         if isCalenderOpen {
             calender.isHidden = true
-//            label.isHidden = false
-//            locationLabel.isHidden = false
-//            image.isHidden = false
-//            dateLabel.isHidden = false
-//            weatherLabel.isHidden = false
-//            moon1View.isHidden = false
-//            moon2View.isHidden = false
-//            sun1View.isHidden = false
-//            sun2View.isHidden = false
-//            moon1Image.isHidden = false
-//            moon2Image.isHidden = false
-//            sun1Image.isHidden = false
-//            sun2Image.isHidden = false
-//            moon1Label.isHidden = false
-//            moon2Label.isHidden = false
-//            sun1Label.isHidden = false
-//            sun2Label.isHidden = false
+            label.isHidden = false
+            locationLabel.isHidden = false
+            image.isHidden = false
+            dateLabel.isHidden = false
+            weatherLabel.isHidden = false
+            moon1View.isHidden = false
+
+            label2.snp.makeConstraints { make in
+                make.top.equalTo(moon1View.snp.bottom).offset(16)
+                make.left.equalToSuperview().offset(16)
+            }
+
+            moon2View.isHidden = false
+            sun1View.isHidden = false
+            sun2View.isHidden = false
+            moon1Image.isHidden = false
+            moon2Image.isHidden = false
+            sun1Image.isHidden = false
+            sun2Image.isHidden = false
+            moon1Label.isHidden = false
+            moon2Label.isHidden = false
+            sun1Label.isHidden = false
+            sun2Label.isHidden = false
         } else {
             calender.isHidden = false
-//            label.isHidden = true
-//            locationLabel.isHidden = true
-//            image.isHidden = true
-//            dateLabel.isHidden = true
-//            weatherLabel.isHidden = true
-//            moon1View.isHidden = true
-//            moon2View.isHidden = true
-//            sun1View.isHidden = true
-//            sun2View.isHidden = true
-//            moon1Image.isHidden = true
-//            moon2Image.isHidden = true
-//            sun1Image.isHidden = true
-//            sun2Image.isHidden = true
-//            moon1Label.isHidden = true
-//            moon2Label.isHidden = true
-//            sun1Label.isHidden = true
-//            sun2Label.isHidden = true
+
+            label2.snp.remakeConstraints { make in
+                make.top.equalTo(calender.snp.bottom).offset(48)
+                make.left.equalToSuperview().offset(16)
+            }
+
+            label.isHidden = true
+            locationLabel.isHidden = true
+            image.isHidden = true
+            dateLabel.isHidden = true
+            weatherLabel.isHidden = true
+            moon1View.isHidden = true
+            moon2View.isHidden = true
+            sun1View.isHidden = true
+            sun2View.isHidden = true
+            moon1Image.isHidden = true
+            moon2Image.isHidden = true
+            sun1Image.isHidden = true
+            sun2Image.isHidden = true
+            moon1Label.isHidden = true
+            moon2Label.isHidden = true
+            sun1Label.isHidden = true
+            sun2Label.isHidden = true
         }
-        
+
         isCalenderOpen.toggle()
     }
 
