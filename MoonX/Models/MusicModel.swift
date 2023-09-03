@@ -8,11 +8,11 @@
 import Foundation
 
 struct MusicModel {
-    let music: URL
-    let musicName: String
-    let artistName: String
-    let duration: String
-    let image: String
-    let backgroundImage: String
-    let segment: Int
+	let music: URL
+	let musicName: String
+	let artistName: String
+	let duration: String
+	let image: String
+	let backgroundImage: String
+	let segment: Int
 }

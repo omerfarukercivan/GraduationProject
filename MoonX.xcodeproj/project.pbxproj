@@ -19,7 +19,6 @@
 		AE52B6712A9CE4AD00786E7D /* InnAppVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B6702A9CE4AD00786E7D /* InnAppVC.swift */; };
 		AE52B6772A9DF6CC00786E7D /* MeditationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B6762A9DF6CC00786E7D /* MeditationVC.swift */; };
 		AE52B6792A9DF6DE00786E7D /* SettingsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B6782A9DF6DE00786E7D /* SettingsVC.swift */; };
-		AE52B67B2A9DF71200786E7D /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B67A2A9DF71200786E7D /* TabBarController.swift */; };
 		AE52B6812A9E1A1F00786E7D /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE52B6802A9E1A1F00786E7D /* StoreKit.framework */; };
 		AE52B6832A9E1B5900786E7D /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = AE52B6822A9E1B5900786E7D /* StoreKitTestCertificate.cer */; };
 		AE52B6852AA0850600786E7D /* MusicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE52B6842AA0850600786E7D /* MusicModel.swift */; };
@@ -49,7 +48,6 @@
 		AE52B6702A9CE4AD00786E7D /* InnAppVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InnAppVC.swift; sourceTree = "<group>"; };
 		AE52B6762A9DF6CC00786E7D /* MeditationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeditationVC.swift; sourceTree = "<group>"; };
 		AE52B6782A9DF6DE00786E7D /* SettingsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVC.swift; sourceTree = "<group>"; };
-		AE52B67A2A9DF71200786E7D /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		AE52B67C2A9E0BC900786E7D /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
 		AE52B6802A9E1A1F00786E7D /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		AE52B6822A9E1B5900786E7D /* StoreKitTestCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = StoreKitTestCertificate.cer; sourceTree = "<group>"; };
@@ -104,8 +102,6 @@
 				AE52B6742A9DEC5800786E7D /* Resources */,
 				AE52B6732A9DEC0800786E7D /* Extensions */,
 				AE52B6662A9CC17300786E7D /* Secene */,
-				AE52B6862AA0863200786E7D /* MeditationCell.swift */,
-				AE52B6882AA0995B00786E7D /* PlayerVC.swift */,
 				AE52B68B2AA1C9A500786E7D /* ShowAlert.swift */,
 				AE52B65D2A9CB70A00786E7D /* Info.plist */,
 			);
@@ -115,6 +111,8 @@
 		AE52B6662A9CC17300786E7D /* Secene */ = {
 			isa = PBXGroup;
 			children = (
+				AEAD40892AA48FA000B93668 /* Settings */,
+				AEAD40882AA48F9400B93668 /* Meditation */,
 				AE52B6752A9DEDA600786E7D /* Home */,
 				AE52B6722A9DEBF900786E7D /* Paywall */,
 				AE52B6672A9CC17D00786E7D /* Onboarding */,
@@ -164,9 +162,6 @@
 			isa = PBXGroup;
 			children = (
 				AE52B6532A9CB70A00786E7D /* HomeVC.swift */,
-				AE52B6762A9DF6CC00786E7D /* MeditationVC.swift */,
-				AE52B6782A9DF6DE00786E7D /* SettingsVC.swift */,
-				AE52B67A2A9DF71200786E7D /* TabBarController.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -197,6 +192,24 @@
 				AE52B6A22AA32EF800786E7D /* music4.mp3 */,
 			);
 			path = Musics;
+			sourceTree = "<group>";
+		};
+		AEAD40882AA48F9400B93668 /* Meditation */ = {
+			isa = PBXGroup;
+			children = (
+				AE52B6762A9DF6CC00786E7D /* MeditationVC.swift */,
+				AE52B6862AA0863200786E7D /* MeditationCell.swift */,
+				AE52B6882AA0995B00786E7D /* PlayerVC.swift */,
+			);
+			path = Meditation;
+			sourceTree = "<group>";
+		};
+		AEAD40892AA48FA000B93668 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				AE52B6782A9DF6DE00786E7D /* SettingsVC.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -298,7 +311,6 @@
 				AE52B6872AA0863200786E7D /* MeditationCell.swift in Sources */,
 				AE52B68C2AA1C9A500786E7D /* ShowAlert.swift in Sources */,
 				AE52B6502A9CB70A00786E7D /* AppDelegate.swift in Sources */,
-				AE52B67B2A9DF71200786E7D /* TabBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
