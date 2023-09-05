@@ -181,6 +181,7 @@ final class SettingsVC: UIViewController {
 
 		restoreButton.backgroundColor = .darkPurple
 		restoreButton.layer.cornerRadius = 10
+		restoreButton.addTarget(self, action: #selector(restoreButtonTapped), for: .touchDown)
 		view.addSubview(restoreButton)
 		restoreButton.snp.makeConstraints { make in
 			make.top.equalTo(termsButton.snp.bottom).offset(8)
@@ -206,6 +207,7 @@ final class SettingsVC: UIViewController {
 
 		helpButton.backgroundColor = .darkPurple
 		helpButton.layer.cornerRadius = 10
+		helpButton.addTarget(self, action: #selector(restoreButtonTapped), for: .touchDown)
 		view.addSubview(helpButton)
 		helpButton.snp.makeConstraints { make in
 			make.top.equalTo(restoreButton.snp.bottom).offset(8)
@@ -231,6 +233,7 @@ final class SettingsVC: UIViewController {
 
 		rateButton.backgroundColor = .darkPurple
 		rateButton.layer.cornerRadius = 10
+		rateButton.addTarget(self, action: #selector(rateButtonTapped), for: .touchDown)
 		view.addSubview(rateButton)
 		rateButton.snp.makeConstraints { make in
 			make.top.equalTo(helpButton.snp.bottom).offset(8)
@@ -269,5 +272,23 @@ final class SettingsVC: UIViewController {
 
 	@objc private func backButtonTapped() {
 		self.dismiss(animated: true)
+	}
+
+	@objc private func restoreButtonTapped() {
+		if !Neon.isUserPremium {
+			RevenueCatManager.restorePurchases(vc: self, animation: .loadingBar) {
+				self.present(destinationVC: HomeVC(), slideDirection: .up)
+			} completionFailure: {
+				print("restore error")
+			}
+		}
+	}
+
+	@objc private func helpButtonTapped() {
+		UIApplication.shared.open(URL(string: "https://www.neonapps.co/contact-us")!)
+	}
+
+	@objc private func rateButtonTapped() {
+		UIApplication.shared.open(URL(string: "itms-apps://itunes.apple.com/app/id1576477935?action=write-review")!)
 	}
 }

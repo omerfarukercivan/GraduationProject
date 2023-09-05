@@ -60,7 +60,15 @@ class PlayerVC: UIViewController {
 			make.left.equalToSuperview().offset(16)
 		}
 
-		playPauseButton.setImage(UIImage(named: "btn_play_playlist"), for: .normal)
+		if audioPlayer!.isPlaying {
+//			player.pause()
+			playPauseButton.setImage(UIImage(named: "btn_pause_playlist"), for: .normal)
+		} else {
+//			player.play()
+			playPauseButton.setImage(UIImage(named: "btn_play_playlist"), for: .normal)
+		}
+
+//		playPauseButton.setImage(UIImage(named: "btn_play_playlist"), for: .normal)
 		playPauseButton.addTarget(self, action: #selector(playPauseButtonTapped), for: .touchDown)
 		view.addSubview(playPauseButton)
 		playPauseButton.snp.makeConstraints { make in
@@ -138,11 +146,6 @@ class PlayerVC: UIViewController {
 	private func musicPlay(music: URL) {
 		do {
 			audioPlayer = try AVAudioPlayer(contentsOf: music)
-
-//			if currentTime != nil {
-//				audioPlayer?.currentTime = currentTime
-//			}
-
 			audioPlayer?.currentTime = currentTime
 
 			audioPlayer!.prepareToPlay()
@@ -188,8 +191,10 @@ class PlayerVC: UIViewController {
 		if let player = audioPlayer {
 			if player.isPlaying {
 				player.pause()
+				playPauseButton.setImage(UIImage(named: "btn_play_playlist"), for: .normal)
 			} else {
 				player.play()
+				playPauseButton.setImage(UIImage(named: "btn_pause_playlist"), for: .normal)
 			}
 		}
 	}
@@ -206,6 +211,7 @@ class PlayerVC: UIViewController {
 		musicPlay(music: music.music)
 		nameLabel.text = music.musicName
 		currentTime = 0
+		playPauseButton.setImage(UIImage(named: "btn_pause_playlist"), for: .normal)
 	}
 
 	@objc private func nextButtonTapped() {
@@ -214,6 +220,7 @@ class PlayerVC: UIViewController {
 		musicPlay(music: music.music)
 		nameLabel.text = music.musicName
 		currentTime = 0
+		playPauseButton.setImage(UIImage(named: "btn_pause_playlist"), for: .normal)
 	}
 
 	fileprivate func changeTrack(moveForward: Bool) {

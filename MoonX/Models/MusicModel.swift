@@ -15,4 +15,5 @@ struct MusicModel: Codable {
 	let image: String
 	let backgroundImage: String
 	let segment: Int
+	let section: Int
 }

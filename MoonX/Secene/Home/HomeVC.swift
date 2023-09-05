@@ -110,7 +110,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 			Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateSlider), userInfo: nil, repeats: true)
 		}
-		
+
 		setupUI()
 	}
 
@@ -199,12 +199,13 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.height.equalTo(tabbar.snp.width).multipliedBy(0.2)
 		}
 
-		miniPlayPause.setImage(UIImage(named: "btn_pause2"), for: .normal)
+		miniPlayPause.setImage(UIImage(named: isPlay ? "btn_pause2" : "btn_play2"), for: .normal)
 		miniPlayPause.addTarget(self, action: #selector(miniPlayPauseTapped), for: .touchDown)
 		miniView.addSubview(miniPlayPause)
 		miniPlayPause.snp.makeConstraints { make in
 			make.left.equalToSuperview().offset(16)
 			make.height.equalToSuperview().multipliedBy(0.7)
+			make.width.equalTo(miniPlayPause.snp.height)
 			make.centerY.equalToSuperview()
 		}
 
@@ -233,7 +234,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.centerY.equalToSuperview()
 		}
 
-		miniSlider.value = 0.5
+		miniSlider.setThumbImage(UIImage(), for: .normal)
 		miniView.addSubview(miniSlider)
 		miniSlider.addTarget(self, action: #selector(miniSliderValueChanged), for: .valueChanged)
 		miniSlider.snp.makeConstraints { make in
@@ -434,12 +435,14 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.right.equalToSuperview().offset(-16)
 			make.left.equalToSuperview().offset(16)
 		}
-
-		horoscopeImage.image = UIImage(named: "img_aries")
+		
+		horoscopeImage.image = UIImage(named: findZodiacSign(for: UserDefaults.standard.value(forKey: "date")! as! String)!)
 		horoscopeButton.addSubview(horoscopeImage)
 		horoscopeImage.snp.makeConstraints { make in
-			make.left.equalToSuperview().offset(24)
+			make.left.equalToSuperview().offset(16)
 			make.centerY.equalToSuperview()
+			make.width.equalToSuperview().multipliedBy(0.15)
+			make.height.equalTo(horoscopeImage.snp.width)
 		}
 
 		horoscopeName.text = findZodiacSign(for: UserDefaults.standard.value(forKey: "date")! as! String)
@@ -724,7 +727,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 					selectedHoroscopeLoading.isHidden = true
 					selectedTipImage.isHidden = false
 
-					selectedTipImage.image = UIImage(named: "img_food")
+					selectedTipImage.image = UIImage(named: "img_food2")
 					selectedTipLabel.text = "Food"
 					selectedTipHoroscope.text = response
 				} catch {
@@ -739,7 +742,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 					selectedHoroscopeLoading.isHidden = true
 					selectedTipImage.isHidden = false
 
-					selectedTipImage.image = UIImage(named: "img_food")
+					selectedTipImage.image = UIImage(named: "img_food2")
 					selectedTipLabel.text = "Food"
 					selectedTipHoroscope.text = response
 				} catch {
@@ -764,7 +767,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 					selectedHoroscopeLoading.isHidden = true
 					selectedTipImage.isHidden = false
 
-					selectedTipImage.image = UIImage(named: "img_relations")
+					selectedTipImage.image = UIImage(named: "img_relations2")
 					selectedTipLabel.text = "Relations"
 					selectedTipHoroscope.text = response
 				} catch {
@@ -779,7 +782,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 					selectedHoroscopeLoading.isHidden = true
 					selectedTipImage.isHidden = false
 
-					selectedTipImage.image = UIImage(named: "img_relations")
+					selectedTipImage.image = UIImage(named: "img_relations2")
 					selectedTipLabel.text = "Relations"
 					selectedTipHoroscope.text = response
 				} catch {
@@ -927,8 +930,10 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		if let player = audioPlayer {
 			if player.isPlaying {
 				player.pause()
+				miniPlayPause.setImage(UIImage(named: "btn_play2"), for: .normal)
 			} else {
 				player.play()
+				miniPlayPause.setImage(UIImage(named: "btn_pause2"), for: .normal)
 			}
 		}
 	}
