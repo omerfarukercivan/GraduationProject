@@ -7,7 +7,6 @@
 
 import UIKit
 import NeonSDK
-import SnapKit
 import AVFAudio
 
 final class MeditationVC: UIViewController {

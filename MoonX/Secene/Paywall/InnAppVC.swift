@@ -7,8 +7,6 @@
 
 import UIKit
 import NeonSDK
-import SnapKit
-import RevenueCat
 
 final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 
@@ -41,29 +39,27 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		view.backgroundColor = .black
+		view.backgroundColor = .purple
 		RevenueCatManager.delegate = self
 
 		packageFetched()
 		setupUI()
 	}
 
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		isUserPremium()
-	}
+//	override func viewWillAppear(_ animated: Bool) {
+//		super.viewWillAppear(animated)
+//		isUserPremium()
+//	}
 
 	private func setupUI() {
-		label.text = "Lorem Ipssum Dolar Sit"
-		label.font = .systemFont(ofSize: 24)
+		label.text = "Lorem Ipssum\n Dolar Sit"
+		label.font = Font.custom(size: 34, fontWeight: .Bold)
 		label.textColor = .white
 		label.numberOfLines = 0
 		label.textAlignment = .center
 		view.addSubview(label)
 		label.snp.makeConstraints { make in
-			make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(24)
-			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(120)
-			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(120)
+			make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
 			make.centerX.equalToSuperview()
 		}
 
@@ -72,54 +68,107 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		closeButton.contentMode = .scaleAspectFit
 		view.addSubview(closeButton)
 		closeButton.snp.makeConstraints { make in
-			make.top.equalTo(view.safeAreaLayoutGuide).offset(8)
+			make.top.equalTo(view.safeAreaLayoutGuide).offset(12)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(8)
 			make.width.height.equalTo(50)
 		}
 
 		label2.text = "Why do I need to pay?"
-		label2.font = .systemFont(ofSize: 16)
+		label2.font = Font.custom(size: 20, fontWeight: .Regular)
 		label2.textColor = .white
 		view.addSubview(label2)
 		label2.snp.makeConstraints { make in
-			make.top.equalTo(label.snp.bottom).offset(24)
+			make.top.equalTo(label.snp.bottom)
 			make.centerX.equalToSuperview()
 		}
 
 		label3.text = "Experience a virtual presence like never before, crafted just for you. despite the computational demands, we offer this innovative solution at an affordable price."
-		label3.font = .systemFont(ofSize: 12)
+		label3.font = Font.custom(size: 16, fontWeight: .Regular)
 		label3.textColor = .white
 		label3.numberOfLines = 0
 		label3.textAlignment = .center
 		view.addSubview(label3)
 		label3.snp.makeConstraints { make in
-			make.top.equalTo(label2.snp.bottom).offset(16)
+			make.top.equalTo(label2.snp.bottom).offset(12)
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(16)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(16)
 			make.centerX.equalToSuperview()
 		}
 
-		image1.image = UIImage(named: "img_inapp1")
-		view.addSubview(image1)
-		image1.snp.makeConstraints { make in
-			make.top.equalTo(label3.snp.bottom).offset(40)
-			make.left.equalTo(view.safeAreaLayoutGuide.snp.left)
-		}
-
-		image3.image = UIImage(named: "img_inapp3")
-		view.addSubview(image3)
-		image3.snp.makeConstraints { make in
-			make.top.equalTo(label3.snp.bottom).offset(40)
-			make.right.equalTo(view.safeAreaLayoutGuide.snp.right)
-		}
-
 		image2.image = UIImage(named: "img_inapp2")
+		image2.contentMode = .scaleAspectFit
 		view.addSubview(image2)
 		image2.snp.makeConstraints { make in
 			make.top.equalTo(label3.snp.bottom).offset(16)
-			make.right.equalTo(image3.snp.left).offset(-16)
-			make.left.equalTo(image1.snp.right).offset(16)
+			make.bottom.equalTo(view.snp.centerY)
+			make.centerX.equalToSuperview().multipliedBy(0.9)
 		}
+
+
+		image1.image = UIImage(named: "img_inapp1")
+		image1.contentMode = .scaleAspectFit
+		view.addSubview(image1)
+		image1.snp.makeConstraints { make in
+			make.top.equalTo(image2.snp.top).offset(10)
+			make.left.equalTo(view.safeAreaLayoutGuide.snp.left)
+			make.bottom.equalTo(view.snp.centerY).offset(-10)
+		}
+
+		image3.image = UIImage(named: "img_inapp3")
+		image3.contentMode = .scaleAspectFit
+		view.addSubview(image3)
+		image3.snp.makeConstraints { make in
+			make.top.equalTo(image2.snp.top).offset(10)
+			make.right.equalTo(view.safeAreaLayoutGuide.snp.right)
+			make.bottom.equalTo(view.snp.centerY).offset(-10)
+		}
+
+
+
+
+
+
+
+
+
+
+		legalView.termsURL = "[https://www.neonapps.co/terms-of-use](https://www.neonapps.co/terms-of-use)"
+		legalView.privacyURL = "[https://www.neonapps.co/privacy-policy](https://www.neonapps.co/privacy-policy)"
+		legalView.restoreButtonClicked = {
+			RevenueCatManager.restorePurchases(vc: self, animation: .loadingBar) {
+				self.present(destinationVC: HomeVC(), slideDirection: .up)
+			} completionFailure: {
+				print("restore error")
+			}
+		}
+		legalView.textColor = .white
+		view.addSubview(legalView)
+		legalView.snp.makeConstraints { make in
+			make.bottom.left.right.equalToSuperview()
+			make.height.equalTo(50)
+		}
+
+		purchaseButton.setTitle("Purchase for \(annualPrice.text!)", for: .normal)
+		purchaseButton.backgroundColor = .lightPurple
+		purchaseButton.layer.cornerRadius = 16
+		purchaseButton.addTarget(self, action: #selector(purchaseButtonTapped), for: .touchDown)
+		view.addSubview(purchaseButton)
+		purchaseButton.snp.makeConstraints { make in
+//			make.top.equalTo(annualButton.snp.bottom).offset(16)
+			make.bottom.equalTo(legalView.snp.top).offset(16)
+			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(64)
+			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(64)
+			make.height.equalTo(purchaseButton.snp.width).multipliedBy(0.25)
+		}
+
+
+
+
+
+
+
+
+
 
 		weeklyButton.backgroundColor = .mainBlack
 		weeklyButton.layer.borderColor = UIColor.mainBlack.cgColor
@@ -128,10 +177,10 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		weeklyButton.layer.cornerRadius = 16
 		view.addSubview(weeklyButton)
 		weeklyButton.snp.makeConstraints { make in
-			make.top.equalTo(image2.snp.bottom).offset(48)
+			make.top.equalTo(view.snp.centerY).offset(10)
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(40)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(40)
-			make.height.equalTo(64)
+			make.height.equalTo(weeklyButton.snp.width).multipliedBy(0.22)
 		}
 
 		weeklyCheck.image = UIImage(named: "btn_checkbox1")
@@ -151,6 +200,7 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		}
 
 		weeklyPrice.textColor = .white
+		weeklyPrice.font = Font.custom(size: 22, fontWeight: .Medium)
 		weeklyButton.addSubview(weeklyPrice)
 		weeklyPrice.snp.makeConstraints { make in
 			make.left.equalTo(weeklyButton.snp.right).inset(80)
@@ -164,10 +214,10 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		monthlyButton.layer.cornerRadius = 16
 		view.addSubview(monthlyButton)
 		monthlyButton.snp.makeConstraints { make in
-			make.top.equalTo(weeklyButton.snp.bottom).offset(16)
+			make.top.equalTo(weeklyButton.snp.bottom).offset(12)
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(40)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(40)
-			make.height.equalTo(64)
+			make.height.equalTo(weeklyButton.snp.width).multipliedBy(0.22)
 		}
 
 		monthlyCheck.image = UIImage(named: "btn_checkbox1")
@@ -187,6 +237,7 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		}
 
 		monthlyPrice.textColor = .white
+		monthlyPrice.font = Font.custom(size: 22, fontWeight: .Medium)
 		monthlyButton.addSubview(monthlyPrice)
 		monthlyPrice.snp.makeConstraints { make in
 			make.left.equalTo(monthlyButton.snp.right).inset(80)
@@ -228,10 +279,10 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		annualButton.layer.cornerRadius = 16
 		view.addSubview(annualButton)
 		annualButton.snp.makeConstraints { make in
-			make.top.equalTo(monthlyButton.snp.bottom).offset(16)
+			make.top.equalTo(monthlyButton.snp.bottom).offset(12)
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(40)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(40)
-			make.height.equalTo(64)
+			make.height.equalTo(weeklyButton.snp.width).multipliedBy(0.22)
 		}
 
 		annualCheck.image = UIImage(named: "btn_checkbox2")
@@ -251,39 +302,16 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		}
 
 		annualPrice.textColor = .white
+		annualPrice.font = Font.custom(size: 22, fontWeight: .Medium)
 		annualButton.addSubview(annualPrice)
 		annualPrice.snp.makeConstraints { make in
 			make.left.equalTo(annualButton.snp.right).inset(80)
 			make.centerY.equalToSuperview()
 		}
 
-		purchaseButton.setTitle("Purchase for \(annualPrice.text!)", for: .normal)
-		purchaseButton.backgroundColor = .lightPurple
-		purchaseButton.layer.cornerRadius = 16
-		purchaseButton.addTarget(self, action: #selector(purchaseButtonTapped), for: .touchDown)
-		view.addSubview(purchaseButton)
-		purchaseButton.snp.makeConstraints { make in
-			make.top.equalTo(annualButton.snp.bottom).offset(16)
-			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(64)
-			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(64)
-			make.height.equalTo(64)
-		}
 
-		legalView.termsURL = "[https://www.neonapps.co/terms-of-use](https://www.neonapps.co/terms-of-use)"
-		legalView.privacyURL = "[https://www.neonapps.co/privacy-policy](https://www.neonapps.co/privacy-policy)"
-		legalView.restoreButtonClicked = {
-			RevenueCatManager.restorePurchases(vc: self, animation: .loadingBar) {
-				self.present(destinationVC: HomeVC(), slideDirection: .up)
-			} completionFailure: {
-				print("restore error")
-			}
-		}
-		legalView.textColor = .white
-		view.addSubview(legalView)
-		legalView.snp.makeConstraints { make in
-			make.bottom.left.right.equalToSuperview()
-			make.height.equalTo(56)
-		}
+
+
 	}
 
 	func packageFetched() {
@@ -297,12 +325,6 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 
 		if let annual = RevenueCatManager.getPackagePrice(id: "com.neonapps.education.SwiftyStoreKitDemo.Annual") {
 			annualPrice.text = "\(annual)"
-		}
-	}
-
-	func isUserPremium() {
-		if Neon.isUserPremium {
-			present(destinationVC: HomeVC(), slideDirection: .up)
 		}
 	}
 
@@ -366,7 +388,7 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 
 	@objc private func purchaseButtonTapped() {
 		RevenueCatManager.selectPackage(id: productID)
-		RevenueCatManager.purchase(animation: .loadingBar) {
+		RevenueCatManager.subscribe(animation: .loadingBar) {
 			self.present(destinationVC: HomeVC(), slideDirection: .up)
 		} completionFailure: {
 			print("purchase error")

@@ -7,7 +7,6 @@
 
 import UIKit
 import NeonSDK
-import SnapKit
 
 class MeditationCell: NeonCollectionViewCell<MusicModel> {
 

@@ -7,7 +7,6 @@
 
 import UIKit
 import NeonSDK
-import SnapKit
 import AVFAudio
 
 class PlayerVC: UIViewController {
@@ -60,15 +59,7 @@ class PlayerVC: UIViewController {
 			make.left.equalToSuperview().offset(16)
 		}
 
-		if audioPlayer!.isPlaying {
-//			player.pause()
-			playPauseButton.setImage(UIImage(named: "btn_pause_playlist"), for: .normal)
-		} else {
-//			player.play()
-			playPauseButton.setImage(UIImage(named: "btn_play_playlist"), for: .normal)
-		}
-
-//		playPauseButton.setImage(UIImage(named: "btn_play_playlist"), for: .normal)
+		playPauseButton.setImage(UIImage(named: isPlay ? "btn_pause_playlist" : "btn_play_playlist"), for: .normal)
 		playPauseButton.addTarget(self, action: #selector(playPauseButtonTapped), for: .touchDown)
 		view.addSubview(playPauseButton)
 		playPauseButton.snp.makeConstraints { make in
@@ -124,7 +115,10 @@ class PlayerVC: UIViewController {
 			make.centerY.equalTo(view.snp.centerY).multipliedBy(1.6)
 		}
 
-
+		currentTimeSlider.setThumbImage(UIImage(named: "img_thumb"), for: .normal)
+		currentTimeSlider.maximumTrackTintColor = .lightBlack
+		currentTimeSlider.minimumTrackTintColor = .lightPurple
+//		currentTimeSlider.
 		currentTimeSlider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
 		view.addSubview(currentTimeSlider)
 		currentTimeSlider.snp.makeConstraints { make in
@@ -147,7 +141,6 @@ class PlayerVC: UIViewController {
 		do {
 			audioPlayer = try AVAudioPlayer(contentsOf: music)
 			audioPlayer?.currentTime = currentTime
-
 			audioPlayer!.prepareToPlay()
 
 			currentTimeSlider.maximumValue = Float(audioPlayer!.duration)

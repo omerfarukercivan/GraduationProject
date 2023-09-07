@@ -6,8 +6,7 @@
 //
 
 import UIKit
-import SnapKit
-import Hero
+import NeonSDK
 
 final class Onboarding1VC: UIViewController {
 
@@ -33,16 +32,16 @@ final class Onboarding1VC: UIViewController {
 		}
 
 		welcomeLabel.text = "Welcome"
-		welcomeLabel.font = .systemFont(ofSize: 22)
+		welcomeLabel.font = Font.custom(size: 26, fontWeight: .Medium)
 		welcomeLabel.textColor = .white
 		view.addSubview(welcomeLabel)
 		welcomeLabel.snp.makeConstraints { make in
-			make.top.equalTo(view.snp.centerY).offset(80)
+			make.centerY.equalTo(view.snp.centerY).multipliedBy(1.3)
 			make.centerX.equalToSuperview()
 		}
 
 		label.text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusam. Sed ut perspt perspiciatis unde omnis iste natus error si."
-		label.font = .systemFont(ofSize: 16)
+		label.font = Font.custom(size: 16, fontWeight: .Regular)
 		label.textColor = .white
 		label.textAlignment = .center
 		label.numberOfLines = 0
@@ -65,16 +64,18 @@ final class Onboarding1VC: UIViewController {
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(64)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(64)
 			make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(32)
-			make.height.equalTo(48)
+			make.height.equalTo(nextButton.snp.width).multipliedBy(0.2)
 			make.centerX.equalToSuperview()
 		}
 
 		pages.image = UIImage(named: "img_pages1")
 		view.addSubview(pages)
 		pages.snp.makeConstraints { make in
-			make.bottom.equalTo(nextButton.snp.top).offset(-40)
+			make.bottom.equalTo(nextButton.snp.top).offset(-24)
 			make.centerX.equalToSuperview()
 		}
+
+
 	}
 
 	@objc private func nextButtonTapped() {

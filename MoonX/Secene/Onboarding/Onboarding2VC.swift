@@ -6,8 +6,7 @@
 //
 
 import UIKit
-import SnapKit
-import Hero
+import NeonSDK
 
 final class Onboarding2VC: UIViewController {
 

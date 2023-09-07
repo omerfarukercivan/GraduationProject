@@ -7,7 +7,6 @@
 
 import UIKit
 import NeonSDK
-import SnapKit
 
 final class SettingsVC: UIViewController {
 
@@ -75,8 +74,6 @@ final class SettingsVC: UIViewController {
 		premiumView.snp.makeConstraints { make in
 			make.top.equalToSuperview().offset(16)
 			make.left.equalToSuperview().offset(16)
-			make.right.equalToSuperview().offset(-88)
-			make.bottom.equalToSuperview().offset(-64)
 			make.right.equalTo(premiumButton.snp.centerX).multipliedBy(1.4)
 			make.bottom.equalTo(premiumButton.snp.centerY).multipliedBy(1.2)
 		}
@@ -108,15 +105,14 @@ final class SettingsVC: UIViewController {
 			make.right.equalToSuperview().offset(-8)
 		}
 
+		privacyButton.backgroundColor = .darkPurple
+		privacyButton.layer.cornerRadius = 10
+		privacyButton.addTarget(self, action: #selector(privacyButtonTapped), for: .touchDown)
+		view.addSubview(privacyButton)
+
 		if Neon.isUserPremium {
 			premiumButton.isHidden = true
 
-			print("premium")
-
-			privacyButton.backgroundColor = .darkPurple
-			privacyButton.layer.cornerRadius = 10
-			privacyButton.addTarget(self, action: #selector(privacyButtonTapped), for: .touchDown)
-			view.addSubview(privacyButton)
 			privacyButton.snp.makeConstraints { make in
 				make.top.equalTo(settingsLabel.snp.bottom).offset(16)
 				make.left.equalToSuperview().offset(32)
@@ -124,12 +120,6 @@ final class SettingsVC: UIViewController {
 				make.height.equalTo(privacyButton.snp.width).multipliedBy(0.2)
 			}
 		} else {
-			print("fakir")
-
-			privacyButton.backgroundColor = .darkPurple
-			privacyButton.layer.cornerRadius = 10
-			privacyButton.addTarget(self, action: #selector(privacyButtonTapped), for: .touchDown)
-			view.addSubview(privacyButton)
 			privacyButton.snp.makeConstraints { make in
 				make.top.equalTo(premiumButton.snp.bottom).offset(16)
 				make.left.equalToSuperview().offset(32)
@@ -209,11 +199,24 @@ final class SettingsVC: UIViewController {
 		helpButton.layer.cornerRadius = 10
 		helpButton.addTarget(self, action: #selector(restoreButtonTapped), for: .touchDown)
 		view.addSubview(helpButton)
-		helpButton.snp.makeConstraints { make in
-			make.top.equalTo(restoreButton.snp.bottom).offset(8)
-			make.left.equalToSuperview().offset(32)
-			make.right.equalToSuperview().offset(-32)
-			make.height.equalTo(privacyButton.snp.width).multipliedBy(0.2)
+
+
+		if Neon.isUserPremium {
+			restoreButton.isHidden = true
+
+			helpButton.snp.makeConstraints { make in
+				make.top.equalTo(termsButton.snp.bottom).offset(8)
+				make.left.equalToSuperview().offset(32)
+				make.right.equalToSuperview().offset(-32)
+				make.height.equalTo(helpButton.snp.width).multipliedBy(0.2)
+			}
+		} else {
+			helpButton.snp.makeConstraints { make in
+				make.top.equalTo(restoreButton.snp.bottom).offset(8)
+				make.left.equalToSuperview().offset(32)
+				make.right.equalToSuperview().offset(-32)
+				make.height.equalTo(helpButton.snp.width).multipliedBy(0.2)
+			}
 		}
 
 		helpImage.image = UIImage(named: "img_help")
@@ -263,11 +266,11 @@ final class SettingsVC: UIViewController {
 	}
 
 	@objc private func privacyButtonTapped() {
-		UIApplication.shared.open(URL(string: "https://www.neonapps.co/privacy-policy")!)
+		SettingsManager.openLinkFromBrowser(url: "https://www.neonapps.co/privacy-policy")
 	}
 
 	@objc private func termsButtonTapped() {
-		UIApplication.shared.open(URL(string: "https://www.neonapps.co/terms-of-use")!)
+		SettingsManager.openLinkFromBrowser(url: "https://www.neonapps.co/terms-of-use")
 	}
 
 	@objc private func backButtonTapped() {
@@ -285,10 +288,10 @@ final class SettingsVC: UIViewController {
 	}
 
 	@objc private func helpButtonTapped() {
-		UIApplication.shared.open(URL(string: "https://www.neonapps.co/contact-us")!)
+		SettingsManager.openLinkFromBrowser(url: "https://www.neonapps.co/contact-us")
 	}
 
 	@objc private func rateButtonTapped() {
-		UIApplication.shared.open(URL(string: "itms-apps://itunes.apple.com/app/id1576477935?action=write-review")!)
+		SettingsManager.openLinkFromBrowser(url: "itms-apps://itunes.apple.com/app/id1576477935?action=write-review")
 	}
 }

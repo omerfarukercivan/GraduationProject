@@ -7,9 +7,7 @@
 
 import UIKit
 import NeonSDK
-import SnapKit
 import Alamofire
-import ChatGPTSwift
 import AVFAudio
 
 final class HomeVC: UIViewController, UIScrollViewDelegate {
@@ -20,23 +18,24 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 	private let backgroundImage = UIImageView()
 	private let calenderButton = UIButton()
 	private let calender = UIDatePicker()
+	private let calenderView = UILabel()
 	private let label = UILabel()
 	private let locationLabel = UILabel()
-	private let image = UIImageView()
+	private let moonImage = UIImageView()
 	private let dateLabel = UILabel()
 	private let weatherLabel = UILabel()
-	private let moon1View = UIView()
-	private let moon2View = UIView()
-	private let sun1View = UIView()
-	private let sun2View = UIView()
-	private let moon1Image = UIImageView()
-	private let moon2Image = UIImageView()
-	private let sun1Image = UIImageView()
-	private let sun2Image = UIImageView()
-	private let moon1Label = UILabel()
-	private let moon2Label = UILabel()
-	private let sun1Label = UILabel()
-	private let sun2Label = UILabel()
+	private let moonSetView = UIView()
+	private let moonRiseView = UIView()
+	private let sunSetView = UIView()
+	private let sunRiseView = UIView()
+	private let moonSetImage = UIImageView()
+	private let moonRiseImage = UIImageView()
+	private let sunSetImage = UIImageView()
+	private let sunRiseImage = UIImageView()
+	private let moonSetLabel = UILabel()
+	private let moonRiseLabel = UILabel()
+	private let sunSetLabel = UILabel()
+	private let sunRiseLabel = UILabel()
 	private let label2 = UILabel()
 	private let horoscopeButton = UIButton()
 	private let horoscopeImage = UIImageView()
@@ -63,6 +62,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 	private let selectedTipLabel = UILabel()
 	private let selectedTipHoroscope = UILabel()
 	private let tabbar = UIView()
+	private let tabbarView = UIView()
 	private let homeButton = UIImageView()
 	private let homeLabel = UILabel()
 	private let meditationButton = UIButton()
@@ -76,10 +76,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 	private let miniCloseButton = UIButton()
 	private let miniSlider = UISlider()
 
-	private let gptApi = ChatGPTAPI(apiKey: "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")
 	private var isCalenderOpen = false
-	private var selectedDate = ""
-	private var selectedDate2 = ""
 
 	var music: MusicModel!
 	var filteredMusic = [MusicModel]()
@@ -92,41 +89,50 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		super.viewDidLoad()
 		view.backgroundColor = .black
 
-		let key = "CZMGSHZDK65BQXPVXGVWW3QJ6"
-		let adress = UserDefaults.standard.value(forKey: "location")! as! String
-
-		let dateFormatter = DateFormatter()
-		dateFormatter.dateFormat = "yyyy-MM-dd"
-		var date = dateFormatter.string(from: Date())
-
-		if selectedDate2 != "" {
-			date = selectedDate2
-		}
-
-		fetchWeatherData(adress: adress, date: date, key: key)
-
 		if music != nil {
 			musicPlay(music: music.music)
 
 			Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateSlider), userInfo: nil, repeats: true)
 		}
 
+		changeDate()
+		fetchWeather()
 		setupUI()
 	}
 
 	private func setupUI() {
 		scrollView.delegate = self
+		scrollView.showsVerticalScrollIndicator = false
+		scrollView.showsHorizontalScrollIndicator = false
 		scrollView.isScrollEnabled = true
 		view.addSubview(scrollView)
 		scrollView.snp.makeConstraints { make in
 			make.edges.equalToSuperview()
 		}
 
+//		scrollView.delegate = self
+
+////		scrollView.isDirectionalLockEnabled = false
+////		scrollView.isScrollEnabled = true
+//		view.addSubview(scrollView)
+//		scrollView.snp.makeConstraints { make in
+//			make.edges.equalToSuperview()
+//		}
+
+		scrollView.addSubview(contentView)
+		contentView.snp.makeConstraints { make in
+			make.edges.equalToSuperview()
+//			make.width.equalToSuperview()
+//			make.centerX.equalToSuperview()
+			make.height.greaterThanOrEqualTo(view.snp.height)
+//			make.height.equalToSuperview().multipliedBy(2.2)
+		}
+
 		scrollView.addSubview(contentView)
 		contentView.snp.makeConstraints { make in
 			make.edges.equalToSuperview()
 			make.width.equalToSuperview()
-			make.height.equalToSuperview().multipliedBy(2.2)
+//			make.height.equalToSuperview().multipliedBy(2.2)
 		}
 
 		// MARK: Tabbar
@@ -138,8 +144,13 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.bottom.equalToSuperview()
 		}
 
+		tabbar.addSubview(tabbarView)
+		tabbarView.snp.makeConstraints { make in
+			make.edges.equalToSuperview()
+		}
+
 		homeButton.image = UIImage(named: "btn_home")
-		tabbar.addSubview(homeButton)
+		tabbarView.addSubview(homeButton)
 		homeButton.snp.makeConstraints { make in
 			make.centerY.equalToSuperview().offset(-24)
 			make.left.equalToSuperview().offset(32)
@@ -148,7 +159,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		homeLabel.text = "Home"
 		homeLabel.font = .systemFont(ofSize: 12)
 		homeLabel.textColor = .lightPurple
-		tabbar.addSubview(homeLabel)
+		tabbarView.addSubview(homeLabel)
 		homeLabel.snp.makeConstraints { make in
 			make.top.equalTo(homeButton.snp.bottom)
 			make.centerX.equalTo(homeButton.snp.centerX)
@@ -156,7 +167,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		meditationButton.setImage(UIImage(named: "btn_meditation"), for: .normal)
 		meditationButton.addTarget(self, action: #selector(meditationButtonTapped), for: .touchDown)
-		tabbar.addSubview(meditationButton)
+		tabbarView.addSubview(meditationButton)
 		meditationButton.snp.makeConstraints { make in
 			make.centerX.equalToSuperview()
 			make.centerY.equalToSuperview().offset(-24)
@@ -165,7 +176,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		meditationLabel.text = "Meditation"
 		meditationLabel.font = .systemFont(ofSize: 12)
 		meditationLabel.textColor = .white
-		tabbar.addSubview(meditationLabel)
+		tabbarView.addSubview(meditationLabel)
 		meditationLabel.snp.makeConstraints { make in
 			make.top.equalTo(meditationButton.snp.bottom)
 			make.centerX.equalTo(meditationButton.snp.centerX)
@@ -173,7 +184,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		settingsButton.setImage(UIImage(named: "btn_settings"), for: .normal)
 		settingsButton.addTarget(self, action: #selector(settingsButtonTapped), for: .touchDown)
-		tabbar.addSubview(settingsButton)
+		tabbarView.addSubview(settingsButton)
 		settingsButton.snp.makeConstraints { make in
 			make.centerY.equalToSuperview().offset(-24)
 			make.right.equalToSuperview().offset(-32)
@@ -182,7 +193,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		settingsLabel.text = "Settings"
 		settingsLabel.font = .systemFont(ofSize: 12)
 		settingsLabel.textColor = .white
-		tabbar.addSubview(settingsLabel)
+		tabbarView.addSubview(settingsLabel)
 		settingsLabel.snp.makeConstraints { make in
 			make.top.equalTo(settingsButton.snp.bottom)
 			make.centerX.equalTo(settingsButton.snp.centerX)
@@ -235,6 +246,8 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		}
 
 		miniSlider.setThumbImage(UIImage(), for: .normal)
+		miniSlider.maximumTrackTintColor = .white
+		miniSlider.minimumTrackTintColor = .lightPurple
 		miniView.addSubview(miniSlider)
 		miniSlider.addTarget(self, action: #selector(miniSliderValueChanged), for: .valueChanged)
 		miniSlider.snp.makeConstraints { make in
@@ -274,10 +287,15 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.right.equalToSuperview().offset(-16)
 		}
 
+		contentView.addSubview(calenderView)
+		calenderView.snp.makeConstraints { make in
+			make.top.right.left.bottom.equalTo(backgroundImage)
+		}
+
 		label.text = "Good Morning!"
 		label.font = .systemFont(ofSize: 18)
 		label.textColor = .white
-		contentView.addSubview(label)
+		calenderView.addSubview(label)
 		label.snp.makeConstraints { make in
 			make.bottom.equalTo(calenderButton.snp.bottom)
 			make.centerX.equalToSuperview()
@@ -285,15 +303,15 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		locationLabel.font = .systemFont(ofSize: 14)
 		locationLabel.textColor = .white
-		contentView.addSubview(locationLabel)
+		calenderView.addSubview(locationLabel)
 		locationLabel.snp.makeConstraints { make in
 			make.top.equalTo(label.snp.bottom).offset(8)
 			make.centerX.equalToSuperview()
 		}
 
-		image.image = UIImage(named: "img_moon")
-		contentView.addSubview(image)
-		image.snp.makeConstraints { make in
+		moonImage.image = UIImage(named: "img_moon")
+		calenderView.addSubview(moonImage)
+		moonImage.snp.makeConstraints { make in
 			make.top.equalTo(locationLabel.snp.bottom).offset(24)
 			make.centerX.equalToSuperview()
 		}
@@ -303,16 +321,16 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		dateLabel.text = dateFormatter.string(from: Date())
 		dateLabel.textColor = .white
-		contentView.addSubview(dateLabel)
+		calenderView.addSubview(dateLabel)
 		dateLabel.snp.makeConstraints { make in
-			make.top.equalTo(image.snp.bottom).offset(24)
+			make.top.equalTo(moonImage.snp.bottom).offset(24)
 			make.centerX.equalToSuperview()
 		}
 
 
 		weatherLabel.textColor = .white
 		weatherLabel.font = .systemFont(ofSize: 14)
-		contentView.addSubview(weatherLabel)
+		calenderView.addSubview(weatherLabel)
 		weatherLabel.snp.makeConstraints { make in
 			make.top.equalTo(dateLabel.snp.bottom).offset(8)
 			make.centerX.equalToSuperview()
@@ -321,99 +339,99 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		// MARK: Ay ve Güneş doğum batımı
 		stackView.axis = .horizontal
 		stackView.distribution = .equalSpacing
-		contentView.addSubview(stackView)
+		calenderView.addSubview(stackView)
 		stackView.snp.makeConstraints { make in
 			make.top.equalTo(weatherLabel.snp.bottom).offset(32)
-			make.right.equalTo(contentView.snp.right).offset(-8)
-			make.left.equalTo(contentView.snp.left).offset(8)
+			make.right.equalTo(contentView).offset(-8)
+			make.left.equalTo(contentView).offset(8)
 			make.height.equalTo(50)
 		}
 
-		moon1View.backgroundColor = .mainBlack2
-		stackView.addArrangedSubview(moon1View)
-		moon1View.snp.makeConstraints { make in
+		moonSetView.backgroundColor = .mainBlack2
+		stackView.addArrangedSubview(moonSetView)
+		moonSetView.snp.makeConstraints { make in
 			make.width.equalToSuperview().multipliedBy(0.21)
 		}
 
-		moon1Image.image = UIImage(named: "img_moon2")
-		moon1View.addSubview(moon1Image)
-		moon1Image.snp.makeConstraints { make in
-			make.left.equalTo(moon1View.snp.left).offset(2)
+		moonSetImage.image = UIImage(named: "img_moon2")
+		moonSetView.addSubview(moonSetImage)
+		moonSetImage.snp.makeConstraints { make in
+			make.left.equalTo(moonSetView).offset(2)
 			make.height.equalToSuperview().multipliedBy(0.5)
-			make.width.equalTo(moon1Image.snp.height)
+			make.width.equalTo(moonSetImage.snp.height)
 			make.centerY.equalToSuperview()
 		}
 
-		moon1Label.textColor = .white
-		moon1View.addSubview(moon1Label)
-		moon1Label.snp.makeConstraints { make in
-			make.left.equalTo(moon1Image.snp.right).offset(2)
+		moonSetLabel.textColor = .white
+		moonSetView.addSubview(moonSetLabel)
+		moonSetLabel.snp.makeConstraints { make in
+			make.left.equalTo(moonSetImage.snp.right).offset(2)
 			make.centerY.equalToSuperview()
 		}
 
-		moon2View.backgroundColor = .mainBlack2
-		stackView.addArrangedSubview(moon2View)
-		moon2View.snp.makeConstraints { make in
+		moonRiseView.backgroundColor = .mainBlack2
+		stackView.addArrangedSubview(moonRiseView)
+		moonRiseView.snp.makeConstraints { make in
 			make.width.equalToSuperview().multipliedBy(0.21)
 		}
 
-		moon2Image.image = UIImage(named: "img_moon3")
-		moon2View.addSubview(moon2Image)
-		moon2Image.snp.makeConstraints { make in
-			make.left.equalTo(moon2View.snp.left).offset(2)
+		moonRiseImage.image = UIImage(named: "img_moon3")
+		moonRiseView.addSubview(moonRiseImage)
+		moonRiseImage.snp.makeConstraints { make in
+			make.left.equalTo(moonRiseView).offset(2)
 			make.height.equalToSuperview().multipliedBy(0.5)
-			make.width.equalTo(moon2Image.snp.height)
+			make.width.equalTo(moonRiseImage.snp.height)
 			make.centerY.equalToSuperview()
 		}
 
-		moon2Label.textColor = .white
-		moon2View.addSubview(moon2Label)
-		moon2Label.snp.makeConstraints { make in
-			make.left.equalTo(moon2Image.snp.right).offset(2)
+		moonRiseLabel.textColor = .white
+		moonRiseView.addSubview(moonRiseLabel)
+		moonRiseLabel.snp.makeConstraints { make in
+			make.left.equalTo(moonRiseImage.snp.right).offset(2)
 			make.centerY.equalToSuperview()
 		}
 
-		sun1View.backgroundColor = .mainBlack2
-		stackView.addArrangedSubview(sun1View)
-		sun1View.snp.makeConstraints { make in
+		sunSetView.backgroundColor = .mainBlack2
+		stackView.addArrangedSubview(sunSetView)
+		sunSetView.snp.makeConstraints { make in
 			make.width.equalToSuperview().multipliedBy(0.21)
 		}
 
-		sun1Image.image = UIImage(named: "img_sun")
-		sun1View.addSubview(sun1Image)
-		sun1Image.snp.makeConstraints { make in
-			make.left.equalTo(sun1View.snp.left).offset(2)
+		sunSetImage.image = UIImage(named: "img_sun")
+		sunSetView.addSubview(sunSetImage)
+		sunSetImage.snp.makeConstraints { make in
+			make.left.equalTo(sunSetView).offset(2)
 			make.height.equalToSuperview().multipliedBy(0.5)
-			make.width.equalTo(sun1Image.snp.height)
+			make.width.equalTo(sunSetImage.snp.height)
 			make.centerY.equalToSuperview()
 		}
 
-		sun1Label.textColor = .white
-		sun1View.addSubview(sun1Label)
-		sun1Label.snp.makeConstraints { make in
-			make.left.equalTo(sun1Image.snp.right).offset(2)
+		sunSetLabel.textColor = .white
+		sunSetView.addSubview(sunSetLabel)
+		sunSetLabel.snp.makeConstraints { make in
+			make.left.equalTo(sunSetImage.snp.right).offset(2)
 			make.centerY.equalToSuperview()
 		}
 
-		sun2View.backgroundColor = .mainBlack2
-		stackView.addArrangedSubview(sun2View)
-		sun2View.snp.makeConstraints { make in
+		sunRiseView.backgroundColor = .mainBlack2
+		stackView.addArrangedSubview(sunRiseView)
+		sunRiseView.snp.makeConstraints { make in
 			make.width.equalToSuperview().multipliedBy(0.21)
 		}
 
-		sun2Image.image = UIImage(named: "img_sun2")
-		sun2View.addSubview(sun2Image)
-		sun2Image.snp.makeConstraints { make in
-			make.left.equalTo(sun2View.snp.left).offset(2)
+		sunRiseImage.image = UIImage(named: "img_sun2")
+		sunRiseView.addSubview(sunRiseImage)
+		sunRiseImage.snp.makeConstraints { make in
+			make.left.equalTo(sunRiseView).offset(2)
 			make.height.equalToSuperview().multipliedBy(0.5)
-			make.width.equalTo(sun2Image.snp.height)
+			make.width.equalTo(sunRiseImage.snp.height)
 			make.centerY.equalToSuperview()
 		}
 
-		sun2Label.textColor = .white
-		sun2View.addSubview(sun2Label)
-		sun2Label.snp.makeConstraints { make in
-			make.left.equalTo(sun2Image.snp.right).offset(2)
+		sunRiseLabel.textColor = .white
+		sunRiseView.addSubview(sunRiseLabel)
+		sunRiseLabel.snp.makeConstraints { make in
+			make.left.equalTo(sunRiseImage.snp.right).offset(2)
 			make.centerY.equalToSuperview()
 		}
 
@@ -422,7 +440,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		label2.font = .systemFont(ofSize: 18)
 		contentView.addSubview(label2)
 		label2.snp.makeConstraints { make in
-			make.top.equalTo(moon1View.snp.bottom).offset(16)
+			make.top.equalTo(moonSetView.snp.bottom).offset(16)
 			make.left.equalToSuperview().offset(16)
 		}
 
@@ -435,8 +453,8 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.right.equalToSuperview().offset(-16)
 			make.left.equalToSuperview().offset(16)
 		}
-		
-		horoscopeImage.image = UIImage(named: findZodiacSign(for: UserDefaults.standard.value(forKey: "date")! as! String)!)
+
+		horoscopeImage.image = UIImage(named: HoroscopeManager.findZodiacSign(for: UserDefaults.standard.value(forKey: "date")! as! String)!)
 		horoscopeButton.addSubview(horoscopeImage)
 		horoscopeImage.snp.makeConstraints { make in
 			make.left.equalToSuperview().offset(16)
@@ -445,7 +463,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.height.equalTo(horoscopeImage.snp.width)
 		}
 
-		horoscopeName.text = findZodiacSign(for: UserDefaults.standard.value(forKey: "date")! as! String)
+		horoscopeName.text = HoroscopeManager.findZodiacSign(for: UserDefaults.standard.value(forKey: "date")! as! String)
 		horoscopeName.textColor = .white
 		horoscopeName.font = .systemFont(ofSize: 22)
 		horoscopeButton.addSubview(horoscopeName)
@@ -470,6 +488,8 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.top.equalTo(horoscopeButton.snp.bottom).offset(16)
 			make.left.equalToSuperview().offset(16)
 			make.right.equalToSuperview().offset(-16)
+//			make.height.equalTo(horoscopeView2.snp.width).multipliedBy(1.5)
+//			make.height.greaterThanOrEqualTo(100)
 			make.height.equalTo(horoscopeView2.snp.width).multipliedBy(1.5)
 		}
 
@@ -482,8 +502,10 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.height.equalToSuperview().multipliedBy(0.2)
 		}
 
+//		horoscopeLabel.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem"
 		horoscopeLabel.textColor = .white
 		horoscopeLabel.numberOfLines = 0
+		horoscopeLabel.lineBreakMode = .byWordWrapping
 		horoscopeView2.addSubview(horoscopeLabel)
 		horoscopeLabel.snp.makeConstraints { make in
 			make.top.equalToSuperview().offset(16)
@@ -491,6 +513,8 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.left.equalToSuperview().offset(16)
 			make.bottom.equalToSuperview().offset(-16)
 		}
+
+
 
 		// MARK: Burç Yorumu 2
 		tipLabel.text = "Lunar Tips"
@@ -522,7 +546,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		businesButton.backgroundColor = .darkPurple
 		businesButton.layer.cornerRadius = 10
-		businesButton.addTarget(self, action: #selector(businesButtonTapped), for: .touchDown)
+		businesButton.addTarget(self, action: #selector(lunarButtonTapped), for: .touchDown)
 		stackView2.addArrangedSubview(businesButton)
 		businesButton.snp.makeConstraints { make in
 			make.width.equalToSuperview().multipliedBy(0.3)
@@ -545,7 +569,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		foodButton.backgroundColor = .orange
 		foodButton.layer.cornerRadius = 10
-		foodButton.addTarget(self, action: #selector(foodButtonTapped), for: .touchDown)
+		foodButton.addTarget(self, action: #selector(lunarButtonTapped), for: .touchDown)
 		stackView2.addArrangedSubview(foodButton)
 		foodButton.snp.makeConstraints { make in
 			make.width.equalToSuperview().multipliedBy(0.3)
@@ -568,7 +592,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		relationsButton.backgroundColor = .systemPink
 		relationsButton.layer.cornerRadius = 10
-		relationsButton.addTarget(self, action: #selector(relationsButtonTapped), for: .touchDown)
+		relationsButton.addTarget(self, action: #selector(lunarButtonTapped), for: .touchDown)
 		stackView2.addArrangedSubview(relationsButton)
 		relationsButton.snp.makeConstraints { make in
 			make.width.equalToSuperview().multipliedBy(0.3)
@@ -581,7 +605,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.centerY.equalToSuperview()
 		}
 
-		relationsLabel.text = "Reletions"
+		relationsLabel.text = "Relations"
 		relationsLabel.textColor = .white
 		relationsButton.addSubview(relationsLabel)
 		relationsLabel.snp.makeConstraints { make in
@@ -599,6 +623,12 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.left.equalToSuperview().offset(16)
 			make.right.equalToSuperview().offset(-16)
 			make.height.equalTo(horoscopeView3.snp.width).multipliedBy(1.5)
+		}
+
+		let offset = view.frame.size.width * 0.25
+
+		contentView.snp.makeConstraints { make in
+			make.bottom.equalTo(horoscopeView3).offset(offset)
 		}
 
 		horoscopeView3.addSubview(selectedTipImage)
@@ -636,29 +666,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		}
 	}
 
-	func fetchWeatherData(adress: String, date: String, key: String) {
-		let url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/\(adress)/\(date)?unitGroup=metric&key=\(key)&include=days&elements=datetime,sunrise,sunset,moonset,moonrise,temp,conditions"
-
-		AF.request(url, method: .get).responseJSON { response in
-			switch response.result {
-			case .success(let value):
-				if let json = value as? [String: Any], let days = json["days"] as? [[String: Any]] {
-					self.locationLabel.text = (json["resolvedAddress"] as! String)
-
-					for dayData in days {
-						self.moon1Label.text = self.convertTimeFormat(dayData["moonset"]! as! String)
-						self.moon2Label.text = self.convertTimeFormat(dayData["moonrise"]! as! String)
-						self.sun1Label.text = self.convertTimeFormat(dayData["sunset"]! as! String)
-						self.sun2Label.text = self.convertTimeFormat(dayData["sunrise"]! as! String)
-						self.weatherLabel.text = "\((dayData["conditions"]! as! String)) , \((dayData["temp"]! as! NSNumber).stringValue) C"
-					}
-				}
-			case .failure(let error):
-				print("Veri çekme hatası: \(error)")
-			}
-		}
-	}
-
 	func convertTimeFormat(_ timeString: String) -> String? {
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "HH:mm:ss"
@@ -672,120 +679,29 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		return nil
 	}
 
-	@objc private func businesButtonTapped() {
+	@objc private func lunarButtonTapped(_ sender: UIButton) {
 		selectedTipLabel.text = ""
 		selectedTipHoroscope.text = ""
 		selectedTipImage.isHidden = true
 		selectedHoroscopeLoading.isHidden = false
 		selectedHoroscopeLoading.play()
 
-		if selectedDate != "" {
-			Task {
-				do {
-					let response = try await gptApi.sendMessage(text: "If I am a \(horoscopeName.text!), pretend you are a fortune teller, please generate my horoscope for \(selectedDate) for business. Please try to limit it 120 words")
-					selectedHoroscopeLoading.stop()
-					selectedHoroscopeLoading.isHidden = true
-					selectedTipImage.isHidden = false
+		let lunar = "\((sender.subviews.first(where: { $0 is UILabel }) as? UILabel)!.text!)"
 
-					selectedTipImage.image = UIImage(named: "img_business2")
-					selectedTipLabel.text = "Business"
-					selectedTipHoroscope.text = response
-				} catch {
-					print(error.localizedDescription)
-				}
-			}
-		} else {
-			Task {
-				do {
-					let response = try await gptApi.sendMessage(text: "If I am a \(horoscopeName.text!), pretend you are a fortune teller, please generate my horoscope for today for business. Please try to limit it 120 words")
-					selectedHoroscopeLoading.stop()
-					selectedHoroscopeLoading.isHidden = true
-					selectedTipImage.isHidden = false
+		APIManager.shared.lunarTip = "for \(lunar)"
 
-					selectedTipImage.image = UIImage(named: "img_business2")
-					selectedTipLabel.text = "Business"
-					selectedTipHoroscope.text = response
-				} catch {
-					print(error.localizedDescription)
-				}
-			}
-		}
-	}
+		APIManager.shared.getHoroscope(horoscopeName: horoscopeName.text!) { result in
+			DispatchQueue.main.async {
+				switch result {
+				case .success(let response):
+					self.selectedHoroscopeLoading.stop()
+					self.selectedHoroscopeLoading.isHidden = true
+					self.selectedTipImage.isHidden = false
 
-	@objc private func foodButtonTapped() {
-		selectedTipLabel.text = ""
-		selectedTipHoroscope.text = ""
-		selectedTipImage.isHidden = true
-		selectedHoroscopeLoading.isHidden = false
-		selectedHoroscopeLoading.play()
-
-		if selectedDate != "" {
-			Task {
-				do {
-					let response = try await gptApi.sendMessage(text: "If I am a \(horoscopeName.text!), pretend you are a fortune teller, please generate my horoscope for \(selectedDate) for food. Please try to limit it 120 words")
-					selectedHoroscopeLoading.stop()
-					selectedHoroscopeLoading.isHidden = true
-					selectedTipImage.isHidden = false
-
-					selectedTipImage.image = UIImage(named: "img_food2")
-					selectedTipLabel.text = "Food"
-					selectedTipHoroscope.text = response
-				} catch {
-					print(error.localizedDescription)
-				}
-			}
-		} else {
-			Task {
-				do {
-					let response = try await gptApi.sendMessage(text: "If I am a \(horoscopeName.text!), pretend you are a fortune teller, please generate my horoscope for today for food. Please try to limit it 120 words")
-					selectedHoroscopeLoading.stop()
-					selectedHoroscopeLoading.isHidden = true
-					selectedTipImage.isHidden = false
-
-					selectedTipImage.image = UIImage(named: "img_food2")
-					selectedTipLabel.text = "Food"
-					selectedTipHoroscope.text = response
-				} catch {
-					print(error.localizedDescription)
-				}
-			}
-		}
-	}
-
-	@objc private func relationsButtonTapped() {
-		selectedTipLabel.text = ""
-		selectedTipHoroscope.text = ""
-		selectedTipImage.isHidden = true
-		selectedHoroscopeLoading.isHidden = false
-		selectedHoroscopeLoading.play()
-
-		if selectedDate != "" {
-			Task {
-				do {
-					let response = try await gptApi.sendMessage(text: "If I am a \(horoscopeName.text!), pretend you are a fortune teller, please generate my horoscope for \(selectedDate) for relations. Please try to limit it 120 words")
-					selectedHoroscopeLoading.stop()
-					selectedHoroscopeLoading.isHidden = true
-					selectedTipImage.isHidden = false
-
-					selectedTipImage.image = UIImage(named: "img_relations2")
-					selectedTipLabel.text = "Relations"
-					selectedTipHoroscope.text = response
-				} catch {
-					print(error.localizedDescription)
-				}
-			}
-		} else {
-			Task {
-				do {
-					let response = try await gptApi.sendMessage(text: "If I am a \(horoscopeName.text!), pretend you are a fortune teller, please generate my horoscope for today for horoscope. Please try to limit it 120 words")
-					selectedHoroscopeLoading.stop()
-					selectedHoroscopeLoading.isHidden = true
-					selectedTipImage.isHidden = false
-
-					selectedTipImage.image = UIImage(named: "img_relations2")
-					selectedTipLabel.text = "Relations"
-					selectedTipHoroscope.text = response
-				} catch {
+					self.selectedTipImage.image = UIImage(named: "img_\(lunar.lowercased())2")
+					self.selectedTipLabel.text = lunar
+					self.selectedTipHoroscope.text = response
+				case .failure(let error):
 					print(error.localizedDescription)
 				}
 			}
@@ -793,114 +709,62 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 	}
 
 	@objc private func horoscopeButtonTapped() {
-		horoscopeLabel.text = ""
-		horoscopeLoading.isHidden = false
-		horoscopeLoading.play()
+//		horoscopeLabel.text = ""
+//		horoscopeLoading.isHidden = false
+//		horoscopeLoading.play()
 
-		if selectedDate != "" {
-			Task {
-				do {
-					let response = try await gptApi.sendMessage(text: "If I am a \(horoscopeName.text!), pretend you are a fortune teller, please generate my horoscope for \(selectedDate). Please try to limit it 120 words")
-					horoscopeLoading.stop()
-					horoscopeLoading.isHidden = true
+		horoscopeLabel.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem"
 
-					horoscopeLabel.text = response
-				} catch {
-					print(error.localizedDescription)
-				}
-			}
-		} else {
-			Task {
-				do {
-					let response = try await gptApi.sendMessage(text: "If I am a \(horoscopeName.text!), pretend you are a fortune teller, please generate my horoscope for today. Please try to limit it 120 words")
-					horoscopeLoading.stop()
-					horoscopeLoading.isHidden = true
-
-					horoscopeLabel.text = response
-				} catch {
-					print(error.localizedDescription)
-				}
-			}
-		}
+//		APIManager.shared.getHoroscope(horoscopeName: horoscopeName.text!) { result in
+//			DispatchQueue.main.async {
+//				switch result {
+//				case .success(let response):
+//					self.horoscopeLoading.stop()
+//					self.horoscopeLoading.isHidden = true
+//					self.horoscopeLabel.text = response
+//				case .failure(let error):
+//					print(error.localizedDescription)
+//				}
+//			}
+//		}
 	}
 
 	@objc private func calenderButtonTapped() {
 		if isCalenderOpen {
 			calender.isHidden = true
-			label.isHidden = false
-			locationLabel.isHidden = false
-			image.isHidden = false
-			dateLabel.isHidden = false
-			weatherLabel.isHidden = false
-			moon1View.isHidden = false
+			calenderView.isHidden = false
 
 			label2.snp.makeConstraints { make in
-				make.top.equalTo(moon1View.snp.bottom).offset(16)
+				make.top.equalTo(moonSetView.snp.bottom).offset(16)
 				make.left.equalToSuperview().offset(16)
 			}
-
-			moon2View.isHidden = false
-			sun1View.isHidden = false
-			sun2View.isHidden = false
-			moon1Image.isHidden = false
-			moon2Image.isHidden = false
-			sun1Image.isHidden = false
-			sun2Image.isHidden = false
-			moon1Label.isHidden = false
-			moon2Label.isHidden = false
-			sun1Label.isHidden = false
-			sun2Label.isHidden = false
 		} else {
 			calender.isHidden = false
+			calenderView.isHidden = true
 
 			label2.snp.remakeConstraints { make in
 				make.top.equalTo(calender.snp.bottom).offset(48)
 				make.left.equalToSuperview().offset(16)
 			}
-
-			label.isHidden = true
-			locationLabel.isHidden = true
-			image.isHidden = true
-			dateLabel.isHidden = true
-			weatherLabel.isHidden = true
-			moon1View.isHidden = true
-			moon2View.isHidden = true
-			sun1View.isHidden = true
-			sun2View.isHidden = true
-			moon1Image.isHidden = true
-			moon2Image.isHidden = true
-			sun1Image.isHidden = true
-			sun2Image.isHidden = true
-			moon1Label.isHidden = true
-			moon2Label.isHidden = true
-			sun1Label.isHidden = true
-			sun2Label.isHidden = true
 		}
-
 		isCalenderOpen.toggle()
 	}
 
 	@objc private func dateChanged(_ datePicker: UIDatePicker) {
 		let dateFormatter = DateFormatter()
 		let dateFormatter2 = DateFormatter()
-		let key = "CZMGSHZDK65BQXPVXGVWW3QJ6"
-		let adress = UserDefaults.standard.value(forKey: "location")! as! String
-		var date = dateFormatter2.string(from: Date())
 
 		dateFormatter.dateFormat = "dd MMMM"
 		dateFormatter2.dateFormat = "yyyy-MM-dd"
 
-		selectedDate = dateFormatter.string(from: calender.date)
-		selectedDate2 = dateFormatter2.string(from: calender.date)
+		APIManager.shared.weatherDate = dateFormatter2.string(from: calender.date)
+		APIManager.shared.gptDate = dateFormatter.string(from: calender.date)
+
 
 		horoscopeLabel.text = ""
 		selectedTipHoroscope.text = ""
 
-		if selectedDate2 != "" {
-			date = selectedDate2
-		}
-
-		fetchWeatherData(adress: adress, date: date, key: key)
+		fetchWeather()
 	}
 
 	@objc private func meditationButtonTapped() {
@@ -917,12 +781,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 				player.pause()
 			}
 			miniView.isHidden = true
-			homeButton.isHidden = false
-			homeLabel.isHidden = false
-			meditationButton.isHidden = false
-			meditationLabel.isHidden = false
-			settingsButton.isHidden = false
-			settingsLabel.isHidden = false
+			tabbarView.isHidden = false
 		}
 	}
 
@@ -948,14 +807,10 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 	private func musicPlay(music: URL) {
 		if self.music == nil {
 			miniView.isHidden = true
-			homeButton.isHidden = false
-			homeLabel.isHidden = false
-			meditationButton.isHidden = false
-			meditationLabel.isHidden = false
-			settingsButton.isHidden = false
-			settingsLabel.isHidden = false
+			tabbarView.isHidden = false
 		} else {
 			miniView.isHidden = false
+			tabbarView.isHidden = true
 
 			do {
 				audioPlayer = try AVAudioPlayer(contentsOf: music)
@@ -973,13 +828,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 			miniNameLabel.text = self.music.musicName
 			miniArtistLabel.text = self.music.artistName
-
-			homeButton.isHidden = true
-			homeLabel.isHidden = true
-			meditationButton.isHidden = true
-			meditationLabel.isHidden = true
-			settingsButton.isHidden = true
-			settingsLabel.isHidden = true
 		}
 	}
 
@@ -1006,42 +854,30 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		present(destinationVC: vc, slideDirection: .up)
 	}
 
-	func findZodiacSign(for dateOfBirth: String) -> String? {
-		let dateFormatter = DateFormatter()
-		dateFormatter.dateFormat = "dd/MM/yyyy"
-
-		if let birthDate = dateFormatter.date(from: dateOfBirth) {
-			let components = Calendar.current.dateComponents([.day, .month], from: birthDate)
-
-			if let day = components.day, let month = components.month {
-				switch (day, month) {
-				case (21...31, 3), (1...19, 4):
-					return "Aries"
-				case (20...30, 4), (1...20, 5):
-					return "Taurus"
-				case (21...31, 5), (1...20, 6):
-					return "Gemini"
-				case (21...30, 6), (1...22, 7):
-					return "Cancer"
-				case (23...31, 7), (1...22, 8):
-					return "Leo"
-				case (23...31, 8), (1...22, 9):
-					return "Virgo"
-				case (23...30, 9), (1...22, 10):
-					return "Libra"
-				case (23...31, 10), (1...21, 11):
-					return "Scorpio"
-				case (22...30, 11), (1...19, 12):
-					return "Sagittarius"
-				case (20...31, 12), (1...19, 1):
-					return "Capricorn"
-				case (20...31, 1), (1...18, 2):
-					return "Aquarius"
-				default:
-					return "Pisces"
+	func fetchWeather() {
+		APIManager.shared.fetchWeatherData() { [weak self] (data, error) in
+			if let data = data {
+				DispatchQueue.main.async {
+					self?.locationLabel.text = (data["resolvedAddress"] as? String) ?? ""
+					if let days = data["days"] as? [[String: Any]] {
+						for dayData in days {
+							self?.moonSetLabel.text = self?.convertTimeFormat(dayData["moonset"] as? String ?? "--.--")
+							self?.moonRiseLabel.text = self?.convertTimeFormat(dayData["moonrise"] as? String ?? "--.--")
+							self?.sunSetLabel.text = self?.convertTimeFormat(dayData["sunset"] as? String ?? "--.--")
+							self?.sunRiseLabel.text = self?.convertTimeFormat(dayData["sunrise"] as? String ?? "--.--")
+							self?.weatherLabel.text = "\(dayData["conditions"] as? String ?? ""), \((dayData["temp"] as? NSNumber)?.stringValue ?? "") C"
+						}
+					}
 				}
+			} else if let error = error {
+				print("Veri çekme hatası: \(error)")
 			}
 		}
-		return nil
+	}
+
+	private func changeDate() {
+		let dateFormatter = DateFormatter()
+		dateFormatter.dateFormat = "yyyy-MM-dd"
+		APIManager.shared.weatherDate = dateFormatter.string(from: Date())
 	}
 }

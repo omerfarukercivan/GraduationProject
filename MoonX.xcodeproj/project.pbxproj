@@ -31,6 +31,8 @@
 		AE52B6A52AA32EF800786E7D /* music2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AE52B6A12AA32EF800786E7D /* music2.mp3 */; };
 		AE52B6A62AA32EF800786E7D /* music4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AE52B6A22AA32EF800786E7D /* music4.mp3 */; };
 		AE52B6A72AA32EF800786E7D /* music3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = AE52B6A32AA32EF800786E7D /* music3.mp3 */; };
+		AE98A7AB2AA84AAD0059A1B9 /* HoroscopeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE98A7AA2AA84AAD0059A1B9 /* HoroscopeManager.swift */; };
+		AE98A7AD2AA84B420059A1B9 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE98A7AC2AA84B420059A1B9 /* APIManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +60,8 @@
 		AE52B6A12AA32EF800786E7D /* music2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music2.mp3; sourceTree = "<group>"; };
 		AE52B6A22AA32EF800786E7D /* music4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music4.mp3; sourceTree = "<group>"; };
 		AE52B6A32AA32EF800786E7D /* music3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music3.mp3; sourceTree = "<group>"; };
+		AE98A7AA2AA84AAD0059A1B9 /* HoroscopeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoroscopeManager.swift; sourceTree = "<group>"; };
+		AE98A7AC2AA84B420059A1B9 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,12 +99,13 @@
 		AE52B64E2A9CB70A00786E7D /* MoonX */ = {
 			isa = PBXGroup;
 			children = (
+				AE8A70F42AA9A58400E53933 /* Helper */,
+				AE98A7A92AA84A9E0059A1B9 /* Manager */,
 				AE52B6952AA32C7800786E7D /* Musics */,
 				AE52B68A2AA0A92E00786E7D /* Models */,
 				AE52B6742A9DEC5800786E7D /* Resources */,
 				AE52B6732A9DEC0800786E7D /* Extensions */,
 				AE52B6662A9CC17300786E7D /* Secene */,
-				AE52B68B2AA1C9A500786E7D /* ShowAlert.swift */,
 				AE52B65D2A9CB70A00786E7D /* Info.plist */,
 			);
 			path = MoonX;
@@ -189,6 +194,23 @@
 				AE52B6A22AA32EF800786E7D /* music4.mp3 */,
 			);
 			path = Musics;
+			sourceTree = "<group>";
+		};
+		AE8A70F42AA9A58400E53933 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				AE52B68B2AA1C9A500786E7D /* ShowAlert.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		AE98A7A92AA84A9E0059A1B9 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				AE98A7AA2AA84AAD0059A1B9 /* HoroscopeManager.swift */,
+				AE98A7AC2AA84B420059A1B9 /* APIManager.swift */,
+			);
+			path = Manager;
 			sourceTree = "<group>";
 		};
 		AEAD40882AA48F9400B93668 /* Meditation */ = {
@@ -300,11 +322,13 @@
 				AE52B6852AA0850600786E7D /* MusicModel.swift in Sources */,
 				AE52B6692A9CC1AA00786E7D /* Onboarding1VC.swift in Sources */,
 				AE52B6892AA0995B00786E7D /* PlayerVC.swift in Sources */,
+				AE98A7AB2AA84AAD0059A1B9 /* HoroscopeManager.swift in Sources */,
 				AE52B66F2A9CC6B400786E7D /* UIColor+Extension.swift in Sources */,
 				AE52B6712A9CE4AD00786E7D /* InnAppVC.swift in Sources */,
 				AE52B6792A9DF6DE00786E7D /* SettingsVC.swift in Sources */,
 				AE52B66D2A9CC1F100786E7D /* Onboarding3VC.swift in Sources */,
 				AE52B6872AA0863200786E7D /* MeditationCell.swift in Sources */,
+				AE98A7AD2AA84B420059A1B9 /* APIManager.swift in Sources */,
 				AE52B68C2AA1C9A500786E7D /* ShowAlert.swift in Sources */,
 				AE52B6502A9CB70A00786E7D /* AppDelegate.swift in Sources */,
 			);

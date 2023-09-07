@@ -8,7 +8,6 @@
 import UIKit
 import SnapKit
 import NeonSDK
-import Hero
 import CoreLocation
 
 final class Onboarding3VC: UIViewController {
