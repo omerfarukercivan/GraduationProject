@@ -104,7 +104,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		let homeLabel = UILabel()
 		homeLabel.text = "Home"
-		homeLabel.font = .systemFont(ofSize: 12)
+		homeLabel.font = Font.custom(size: 10, fontWeight: .Medium)
 		homeLabel.textColor = .lightPurple
 		tabbarView.addSubview(homeLabel)
 		homeLabel.snp.makeConstraints { make in
@@ -123,7 +123,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		let meditationLabel = UILabel()
 		meditationLabel.text = "Meditation"
-		meditationLabel.font = .systemFont(ofSize: 12)
+		meditationLabel.font = Font.custom(size: 10, fontWeight: .Medium)
 		meditationLabel.textColor = .white
 		tabbarView.addSubview(meditationLabel)
 		meditationLabel.snp.makeConstraints { make in
@@ -142,7 +142,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		let settingsLabel = UILabel()
 		settingsLabel.text = "Settings"
-		settingsLabel.font = .systemFont(ofSize: 12)
+		settingsLabel.font = Font.custom(size: 10, fontWeight: .Medium)
 		settingsLabel.textColor = .white
 		tabbarView.addSubview(settingsLabel)
 		settingsLabel.snp.makeConstraints { make in
@@ -190,7 +190,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		let label = UILabel()
 		label.text = "Good Morning!"
-		label.font = .systemFont(ofSize: 18)
+		label.font = Font.custom(size: 16, fontWeight: .Bold)
 		label.textColor = .white
 		calenderView.addSubview(label)
 		label.snp.makeConstraints { make in
@@ -198,7 +198,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.centerX.equalToSuperview()
 		}
 
-		locationLabel.font = .systemFont(ofSize: 14)
+		locationLabel.font = Font.custom(size: 12, fontWeight: .Medium)
 		locationLabel.textColor = .white
 		calenderView.addSubview(locationLabel)
 		locationLabel.snp.makeConstraints { make in
@@ -220,6 +220,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		let dateLabel = UILabel()
 		dateLabel.text = dateFormatter.string(from: Date())
 		dateLabel.textColor = .white
+		dateLabel.font = Font.custom(size: 14, fontWeight: .Medium)
 		calenderView.addSubview(dateLabel)
 		dateLabel.snp.makeConstraints { make in
 			make.top.equalTo(moonImage.snp.bottom).offset(24)
@@ -227,7 +228,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		}
 
 		weatherLabel.textColor = .white
-		weatherLabel.font = .systemFont(ofSize: 14)
+		weatherLabel.font = Font.custom(size: 12, fontWeight: .Light)
 		calenderView.addSubview(weatherLabel)
 		weatherLabel.snp.makeConstraints { make in
 			make.top.equalTo(dateLabel.snp.bottom).offset(8)
@@ -272,7 +273,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		label2.text = "What is for Today?"
 		label2.textColor = .white
-		label2.font = .systemFont(ofSize: 18)
+		label2.font = Font.custom(size: 16, fontWeight: .Medium)
 		contentView.addSubview(label2)
 		label2.snp.makeConstraints { make in
 			make.top.equalTo(moonSetView.snp.bottom).offset(16)
@@ -302,7 +303,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 		horoscopeName.text = HoroscopeManager.findZodiacSign(for: UserDefaults.standard.value(forKey: "date")! as! String)
 		horoscopeName.textColor = .white
-		horoscopeName.font = .systemFont(ofSize: 22)
+		horoscopeName.font = Font.custom(size: 18, fontWeight: .Bold)
 		horoscopeButton.addSubview(horoscopeName)
 		horoscopeName.snp.makeConstraints { make in
 			make.top.equalTo(horoscopeImage.snp.top)
@@ -312,7 +313,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		let label3 = UILabel()
 		label3.text = "Your Daily Horoscope"
 		label3.textColor = .white
-		label3.font = .systemFont(ofSize: 16)
+		label3.font = Font.custom(size: 15, fontWeight: .Regular)
 		contentView.addSubview(label3)
 		label3.snp.makeConstraints { make in
 			make.top.equalTo(horoscopeName.snp.bottom).offset(8)
@@ -354,7 +355,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		let tipLabel = UILabel()
 		tipLabel.text = "Lunar Tips"
 		tipLabel.textColor = .white
-		tipLabel.font = .systemFont(ofSize: 18)
+		tipLabel.font = Font.custom(size: 16, fontWeight: .SemiBold)
 		contentView.addSubview(tipLabel)
 		tipLabel.snp.makeConstraints { make in
 			make.top.equalTo(horoscopeView2.snp.bottom).offset(16)
@@ -487,7 +488,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		}
 
 		miniNameLabel.textColor = .white
-		miniNameLabel.font = .systemFont(ofSize: 12)
+		miniNameLabel.font = Font.custom(size: 12, fontWeight: .Regular)
 		miniView.addSubview(miniNameLabel)
 		miniNameLabel.snp.makeConstraints { make in
 			make.top.equalTo(miniPlayPause.snp.top)
@@ -495,7 +496,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		}
 
 		miniArtistLabel.textColor = .white
-		miniArtistLabel.font = .systemFont(ofSize: 10)
+		miniArtistLabel.font = Font.custom(size: 10, fontWeight: .Regular)
 		miniView.addSubview(miniArtistLabel)
 		miniArtistLabel.snp.makeConstraints { make in
 			make.top.equalTo(miniNameLabel.snp.bottom).offset(8)

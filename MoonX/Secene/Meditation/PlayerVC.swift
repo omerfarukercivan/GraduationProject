@@ -100,7 +100,7 @@ class PlayerVC: UIViewController {
 		}
 
 		durationLabel.textColor = .white
-		durationLabel.font = .systemFont(ofSize: 14)
+		durationLabel.font = Font.custom(size: 14, fontWeight: .Medium)
 		view.addSubview(durationLabel)
 		durationLabel.snp.makeConstraints { make in
 			make.right.equalToSuperview().offset(-8)
@@ -108,7 +108,7 @@ class PlayerVC: UIViewController {
 		}
 
 		currentTimeLabel.textColor = .white
-		currentTimeLabel.font = .systemFont(ofSize: 14)
+		currentTimeLabel.font = Font.custom(size: 14, fontWeight: .Medium)
 		view.addSubview(currentTimeLabel)
 		currentTimeLabel.snp.makeConstraints { make in
 			make.left.equalToSuperview().offset(8)
@@ -128,7 +128,7 @@ class PlayerVC: UIViewController {
 
 		nameLabel.text = music?.musicName
 		nameLabel.textColor = .white
-		nameLabel.font = .systemFont(ofSize: 22)
+		nameLabel.font = Font.custom(size: 20, fontWeight: .SemiBold)
 		view.addSubview(nameLabel)
 		nameLabel.snp.makeConstraints { make in
 			make.bottom.equalTo(currentTimeSlider.snp.top).offset(-24)
@@ -214,7 +214,7 @@ class PlayerVC: UIViewController {
 		playPauseButton.setImage(UIImage(named: "btn_pause_playlist"), for: .normal)
 	}
 
-	fileprivate func changeTrack(moveForward: Bool) {
+	private func changeTrack(moveForward: Bool) {
 		if filteredMusic.count == 0 { return }
 
 		let offset = moveForward ? 1 : filteredMusic.count - 1

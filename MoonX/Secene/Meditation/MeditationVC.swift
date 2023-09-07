@@ -59,7 +59,7 @@ final class MeditationVC: UIViewController {
 		}
 
 		musicTitle.textColor = .white
-		musicTitle.font = .systemFont(ofSize: 22)
+		musicTitle.font = Font.custom(size: 20, fontWeight: .SemiBold)
 		view.addSubview(musicTitle)
 		musicTitle.snp.makeConstraints { make in
 			make.top.equalTo(musicSegment.snp.bottom).offset(24)
@@ -92,7 +92,7 @@ final class MeditationVC: UIViewController {
 
 		musicTitle2.text = "XYZ"
 		musicTitle2.textColor = .white
-		musicTitle2.font = .systemFont(ofSize: 22)
+		musicTitle2.font = Font.custom(size: 20, fontWeight: .SemiBold)
 		musicTitle2.isHidden = true
 		view.addSubview(musicTitle2)
 		musicTitle2.snp.makeConstraints { make in

@@ -21,7 +21,7 @@ final class SettingsVC: UIViewController {
 		let settingsLabel = UILabel()
 		settingsLabel.text = "Settings"
 		settingsLabel.textColor = .white
-		settingsLabel.font = .systemFont(ofSize: 20)
+		settingsLabel.font = Font.custom(size: 18, fontWeight: .Medium)
 		view.addSubview(settingsLabel)
 		settingsLabel.snp.makeConstraints { make in
 			make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
@@ -64,13 +64,13 @@ final class SettingsVC: UIViewController {
 		}
 
 		let premiumLabel1 = UILabel()
-		premiumLabel1.text = "Get Premium \n to Access All Contents!"
+		premiumLabel1.text = "Get Premium \n\n to Access All Contents!"
 		premiumLabel1.textColor = .white
 		premiumLabel1.numberOfLines = 0
-		premiumLabel1.font = .systemFont(ofSize: 24)
+		premiumLabel1.font = Font.custom(size: 20, fontWeight: .SemiBold)
 		premiumView.addSubview(premiumLabel1)
 		premiumLabel1.snp.makeConstraints { make in
-			make.top.equalToSuperview().offset(4)
+			make.top.equalToSuperview().offset(8)
 			make.left.equalToSuperview().offset(4)
 		}
 
@@ -85,7 +85,7 @@ final class SettingsVC: UIViewController {
 		let premiumLabel2 = UILabel()
 		premiumLabel2.text = "Unlock package in order to access the features"
 		premiumLabel2.textColor = .white
-		premiumLabel2.font = .systemFont(ofSize: 15)
+		premiumLabel2.font = Font.custom(size: 14, fontWeight: .SemiBold)
 		premiumButton.addSubview(premiumLabel2)
 		premiumLabel2.snp.makeConstraints { make in
 			make.top.equalTo(premiumView.snp.bottom).offset(16)

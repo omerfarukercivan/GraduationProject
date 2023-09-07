@@ -30,25 +30,24 @@ class MeditationCell: NeonCollectionViewCell<MusicModel> {
 	override func configure(with music: MusicModel) {
 		super.configure(with: music)
 
-		let blurView = NeonBlurView()
 		blurView.colorTint = .black
 		blurView.colorTintAlpha = 0.1
 		blurView.blurRadius = 10
 		blurView.scale = 1
 
-		let image = UIImageView()
 		image.image = UIImage(named: music.image)
 
 		nameLabel.text = music.musicName
+		nameLabel.font = Font.custom(size: 16, fontWeight: .Regular)
 		nameLabel.textColor = .white
 
 		artistLabel.text = music.artistName
 		artistLabel.textColor = .white
-		artistLabel.font = .systemFont(ofSize: 12)
+		artistLabel.font = Font.custom(size: 10, fontWeight: .Regular)
 
 		durationLabel.text = music.duration
 		durationLabel.textColor = .white
-		durationLabel.font = .systemFont(ofSize: 12)
+		durationLabel.font = Font.custom(size: 10, fontWeight: .Regular)
 
 		playButton.setImage(UIImage(named: "btn_play"), for: .normal)
 	}

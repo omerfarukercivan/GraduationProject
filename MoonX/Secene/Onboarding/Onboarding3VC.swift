@@ -39,21 +39,22 @@ final class Onboarding3VC: UIViewController {
 
 		let label = UILabel()
 		label.text = "Lorem Ipsum"
-		label.font = .systemFont(ofSize: 24)
+		label.font = Font.custom(size: 24, fontWeight: .Medium)
 		label.textColor = .white
 		label.textAlignment = .center
 		label.numberOfLines = 0
 		view.addSubview(label)
 		label.snp.makeConstraints { make in
-			make.bottom.equalTo(backgroundImage.snp.bottom).inset(40)
+//			make.bottom.equalTo(backgroundImage.snp.bottom).inset(40)
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(48)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(48)
 			make.centerX.equalToSuperview()
+			make.centerY.equalToSuperview().multipliedBy(0.85)
 		}
 
 		let label2 = UILabel()
 		label2.text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusam. Sed ut perspt perspiciatis unde omnis iste natus error si."
-		label2.font = .systemFont(ofSize: 16)
+		label2.font = Font.custom(size: 16, fontWeight: .Regular)
 		label2.textColor = .white
 		label2.textAlignment = .center
 		label2.numberOfLines = 0
@@ -67,7 +68,7 @@ final class Onboarding3VC: UIViewController {
 
 		 let locationLabel = UILabel()
 		locationLabel.text = "Enter Your Place of Birth"
-		locationLabel.font = .systemFont(ofSize: 16)
+		locationLabel.font = Font.custom(size: 16, fontWeight: .Medium)
 		locationLabel.textColor = .white
 		locationLabel.textAlignment = .center
 		locationLabel.numberOfLines = 0
@@ -105,7 +106,7 @@ final class Onboarding3VC: UIViewController {
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(64)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(64)
 			make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(32)
-			make.height.equalTo(48)
+			make.height.equalTo(nextButton.snp.width).multipliedBy(0.2)
 			make.centerX.equalToSuperview()
 		}
 
@@ -113,7 +114,7 @@ final class Onboarding3VC: UIViewController {
 		pages.image = UIImage(named: "img_pages3")
 		view.addSubview(pages)
 		pages.snp.makeConstraints { make in
-			make.bottom.equalTo(nextButton.snp.top).offset(-40)
+			make.bottom.equalTo(nextButton.snp.top).offset(-24)
 			make.centerX.equalToSuperview()
 		}
 	}

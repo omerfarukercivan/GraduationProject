@@ -34,21 +34,22 @@ final class Onboarding2VC: UIViewController {
 
 		let label = UILabel()
 		label.text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusam. Sed ut perspt perspiciatis unde omnis iste natus error si."
-		label.font = .systemFont(ofSize: 16)
+		label.font = Font.custom(size: 16, fontWeight: .Regular)
 		label.textColor = .white
 		label.textAlignment = .center
 		label.numberOfLines = 0
 		view.addSubview(label)
 		label.snp.makeConstraints { make in
-			make.bottom.equalTo(backgroundImage.snp.bottom).inset(32)
+//			make.bottom.equalTo(backgroundImage.snp.bottom).inset(32)
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(48)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(48)
 			make.centerX.equalToSuperview()
+			make.centerY.equalToSuperview().multipliedBy(0.9)
 		}
 
 		let dateLabel = UILabel()
 		dateLabel.text = "Enter Birth Date"
-		dateLabel.font = .systemFont(ofSize: 16)
+		dateLabel.font = Font.custom(size: 16, fontWeight: .Medium)
 		dateLabel.textColor = .white
 		view.addSubview(dateLabel)
 		dateLabel.snp.makeConstraints { make in
@@ -78,7 +79,7 @@ final class Onboarding2VC: UIViewController {
 
 		let timeLabel = UILabel()
 		timeLabel.text = "Enter Birth Date"
-		timeLabel.font = .systemFont(ofSize: 16)
+		timeLabel.font = Font.custom(size: 16, fontWeight: .Medium)
 		timeLabel.textColor = .white
 		view.addSubview(timeLabel)
 		timeLabel.snp.makeConstraints { make in
@@ -118,7 +119,7 @@ final class Onboarding2VC: UIViewController {
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(64)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(64)
 			make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).inset(32)
-			make.height.equalTo(48)
+			make.height.equalTo(nextButton.snp.width).multipliedBy(0.2)
 			make.centerX.equalToSuperview()
 		}
 
@@ -126,9 +127,16 @@ final class Onboarding2VC: UIViewController {
 		pages.image = UIImage(named: "img_pages2")
 		view.addSubview(pages)
 		pages.snp.makeConstraints { make in
-			make.bottom.equalTo(nextButton.snp.top).offset(-40)
+			make.bottom.equalTo(nextButton.snp.top).offset(-24)
 			make.centerX.equalToSuperview()
 		}
+
+
+
+
+
+		dateField.text = "23/11/2001"
+		timeField.text = "23.23"
 	}
 
 	@objc private func nextButtonTapped() {
