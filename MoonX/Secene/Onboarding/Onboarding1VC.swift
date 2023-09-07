@@ -10,10 +10,6 @@ import NeonSDK
 
 final class Onboarding1VC: UIViewController {
 
-	private var backgroundImage = UIImageView()
-	private let welcomeLabel = UILabel()
-	private let label = UILabel()
-	private let pages = UIImageView()
 	private let nextButton = UIButton()
 
 	override func viewDidLoad() {
@@ -25,12 +21,14 @@ final class Onboarding1VC: UIViewController {
 	}
 
 	private func setupUI() {
+		var backgroundImage = UIImageView()
 		backgroundImage = UIImageView(image: UIImage(named: "img_background_onboarding1"))
 		view.addSubview(backgroundImage)
 		backgroundImage.snp.makeConstraints { make in
 			make.edges.equalToSuperview()
 		}
 
+		let welcomeLabel = UILabel()
 		welcomeLabel.text = "Welcome"
 		welcomeLabel.font = Font.custom(size: 26, fontWeight: .Medium)
 		welcomeLabel.textColor = .white
@@ -40,6 +38,7 @@ final class Onboarding1VC: UIViewController {
 			make.centerX.equalToSuperview()
 		}
 
+		let label = UILabel()
 		label.text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusam. Sed ut perspt perspiciatis unde omnis iste natus error si."
 		label.font = Font.custom(size: 16, fontWeight: .Regular)
 		label.textColor = .white
@@ -58,7 +57,9 @@ final class Onboarding1VC: UIViewController {
 		nextButton.backgroundColor = .lightPurple
 		nextButton.layer.borderColor = UIColor.lightPurple.cgColor
 		nextButton.layer.cornerRadius = 20
-		nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchDown)
+		nextButton.addAction {
+			self.present(destinationVC: Onboarding2VC(), slideDirection: .right)
+		}
 		view.addSubview(nextButton)
 		nextButton.snp.makeConstraints { make in
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(64)
@@ -68,17 +69,12 @@ final class Onboarding1VC: UIViewController {
 			make.centerX.equalToSuperview()
 		}
 
+		let pages = UIImageView()
 		pages.image = UIImage(named: "img_pages1")
 		view.addSubview(pages)
 		pages.snp.makeConstraints { make in
 			make.bottom.equalTo(nextButton.snp.top).offset(-24)
 			make.centerX.equalToSuperview()
 		}
-
-
-	}
-
-	@objc private func nextButtonTapped() {
-		present(destinationVC: Onboarding2VC(), slideDirection: .right)
 	}
 }

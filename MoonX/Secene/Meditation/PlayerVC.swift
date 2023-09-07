@@ -11,17 +11,11 @@ import AVFAudio
 
 class PlayerVC: UIViewController {
 
-	private let backgroundImage = UIImageView()
-	private let closeButton = UIButton()
 	private let nameLabel = UILabel()
 	private let currentTimeSlider = UISlider()
 	private let currentTimeLabel = UILabel()
 	private let durationLabel = UILabel()
-	private let refreshButton = UIButton()
-	private let backButton = UIButton()
 	private let playPauseButton = UIButton()
-	private let nextButton = UIButton()
-	private let favButton = UIButton()
 
 	var music: MusicModel!
 	var filteredMusic = [MusicModel]()
@@ -45,12 +39,14 @@ class PlayerVC: UIViewController {
 	}
 
 	private func setupUI() {
+		let backgroundImage = UIImageView()
 		backgroundImage.image = UIImage(named: music!.backgroundImage)
 		view.addSubview(backgroundImage)
 		backgroundImage.snp.makeConstraints { make in
 			make.edges.equalToSuperview()
 		}
 
+		let closeButton = UIButton()
 		closeButton.setImage(UIImage(named: "btn_dropdown_arrow"), for: .normal)
 		closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchDown)
 		view.addSubview(closeButton)
@@ -67,6 +63,7 @@ class PlayerVC: UIViewController {
 			make.centerX.equalToSuperview()
 		}
 
+		let backButton = UIButton()
 		backButton.setImage(UIImage(named: "btn_back_playlist"), for: .normal)
 		backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchDown)
 		view.addSubview(backButton)
@@ -75,6 +72,7 @@ class PlayerVC: UIViewController {
 			make.centerX.equalTo(view.snp.centerX).multipliedBy(0.65)
 		}
 
+		let refreshButton = UIButton()
 		refreshButton.setImage(UIImage(named: "btn_refresh_playlist"), for: .normal)
 		refreshButton.addTarget(self, action: #selector(refreshButtonTapped), for: .touchDown)
 		view.addSubview(refreshButton)
@@ -83,6 +81,7 @@ class PlayerVC: UIViewController {
 			make.centerX.equalTo(view.snp.centerX).multipliedBy(0.35)
 		}
 
+		let nextButton = UIButton()
 		nextButton.setImage(UIImage(named: "btn_next_playlist"), for: .normal)
 		nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchDown)
 		view.addSubview(nextButton)
@@ -91,6 +90,7 @@ class PlayerVC: UIViewController {
 			make.centerX.equalTo(view.snp.centerX).multipliedBy(1.35)
 		}
 
+		let favButton = UIButton()
 		favButton.setImage(UIImage(named: "btn_fav_playlist"), for: .normal)
 		favButton.addTarget(self, action: #selector(favButtonTapped), for: .touchDown)
 		view.addSubview(favButton)
@@ -118,7 +118,6 @@ class PlayerVC: UIViewController {
 		currentTimeSlider.setThumbImage(UIImage(named: "img_thumb"), for: .normal)
 		currentTimeSlider.maximumTrackTintColor = .lightBlack
 		currentTimeSlider.minimumTrackTintColor = .lightPurple
-//		currentTimeSlider.
 		currentTimeSlider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
 		view.addSubview(currentTimeSlider)
 		currentTimeSlider.snp.makeConstraints { make in
@@ -176,7 +175,6 @@ class PlayerVC: UIViewController {
 				vc.isPlay = false
 			}
 		}
-
 		present(destinationVC: vc, slideDirection: .down)
 	}
 

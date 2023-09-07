@@ -11,11 +11,9 @@ import AVFAudio
 
 final class MeditationVC: UIViewController {
 
-	private let backButton = UIButton()
 	private var musicSegment: UISegmentedControl!
 	private var musicTitle = UILabel()
 	private var musicTitle2 = UILabel()
-	private var musicTitle3 = UILabel()
 	private var collectionView = NeonCollectionView<MusicModel, MeditationCell>()
 	private var collectionViewXYZ = NeonCollectionView<MusicModel, MeditationCell>()
 
@@ -36,6 +34,7 @@ final class MeditationVC: UIViewController {
 	}
 
 	private func setupUI() {
+		let backButton = UIButton()
 		backButton.setImage(UIImage(named: "btn_back"), for: .normal)
 		backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchDown)
 		view.addSubview(backButton)
@@ -125,8 +124,6 @@ final class MeditationVC: UIViewController {
 
 			self.present(destinationVC: vc, slideDirection: .up)
 		}
-
-
 	}
 
 	private func musicAppend() {

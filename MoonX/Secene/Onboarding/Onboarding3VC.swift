@@ -12,13 +12,8 @@ import CoreLocation
 
 final class Onboarding3VC: UIViewController {
 
-	private var backgroundImage = UIImageView()
-	private let label = UILabel()
-	private let label2 = UILabel()
-	private let locationLabel = UILabel()
 	private let locationField = UITextField()
 	private let nextButton = UIButton()
-	private let pages = UIImageView()
 	private var locationManager = CLLocationManager()
 
 	override func viewDidLoad() {
@@ -35,12 +30,14 @@ final class Onboarding3VC: UIViewController {
 	}
 
 	private func setupUI() {
+		var backgroundImage = UIImageView()
 		backgroundImage.image = UIImage(named: "img_background_onboarding3")
 		view.addSubview(backgroundImage)
 		backgroundImage.snp.makeConstraints { make in
 			make.width.equalTo(backgroundImage.snp.width)
 		}
 
+		let label = UILabel()
 		label.text = "Lorem Ipsum"
 		label.font = .systemFont(ofSize: 24)
 		label.textColor = .white
@@ -54,7 +51,7 @@ final class Onboarding3VC: UIViewController {
 			make.centerX.equalToSuperview()
 		}
 
-
+		let label2 = UILabel()
 		label2.text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusam. Sed ut perspt perspiciatis unde omnis iste natus error si."
 		label2.font = .systemFont(ofSize: 16)
 		label2.textColor = .white
@@ -68,6 +65,7 @@ final class Onboarding3VC: UIViewController {
 			make.centerX.equalToSuperview()
 		}
 
+		 let locationLabel = UILabel()
 		locationLabel.text = "Enter Your Place of Birth"
 		locationLabel.font = .systemFont(ofSize: 16)
 		locationLabel.textColor = .white
@@ -80,6 +78,7 @@ final class Onboarding3VC: UIViewController {
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(48)
 			make.centerX.equalToSuperview()
 		}
+
 
 		locationField.attributedPlaceholder = NSAttributedString(string: "09/03/1999", attributes: [.foregroundColor: UIColor.white1])
 		locationField.textColor = .white1
@@ -110,6 +109,7 @@ final class Onboarding3VC: UIViewController {
 			make.centerX.equalToSuperview()
 		}
 
+		 let pages = UIImageView()
 		pages.image = UIImage(named: "img_pages3")
 		view.addSubview(pages)
 		pages.snp.makeConstraints { make in

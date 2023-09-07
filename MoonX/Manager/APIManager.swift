@@ -45,12 +45,6 @@ class APIManager {
 			gptDate = "today"
 		}
 
-//		if lunarTip != "" {
-//			text = "If I am a \(horoscopeName), pretend you are a fortune teller, please generate my horoscope for \(gptDate) for \(lunarTip). Please try to limit it 120 words"
-//		}
-
-		print(text)
-		print(lunarTip)
 		Task {
 			do {
 				let response = try await gptApi.sendMessage(text: text)

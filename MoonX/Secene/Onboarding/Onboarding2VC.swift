@@ -10,15 +10,10 @@ import NeonSDK
 
 final class Onboarding2VC: UIViewController {
 
-	private var backgroundImage = UIImageView()
-	private let label = UILabel()
-	private let dateLabel = UILabel()
-	private let timeLabel = UILabel()
 	private let datePicker = UIDatePicker()
 	private let dateField = UITextField()
 	private let timePicker = UIDatePicker()
 	private let timeField = UITextField()
-	private let pages = UIImageView()
 	private let nextButton = UIButton()
 
 	override func viewDidLoad() {
@@ -30,12 +25,14 @@ final class Onboarding2VC: UIViewController {
 	}
 
 	private func setupUI() {
+		var backgroundImage = UIImageView()
 		backgroundImage = UIImageView(image: UIImage(named: "img_background_onboarding2"))
 		view.addSubview(backgroundImage)
 		backgroundImage.snp.makeConstraints { make in
 			make.width.equalTo(backgroundImage.snp.width)
 		}
 
+		let label = UILabel()
 		label.text = "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusam. Sed ut perspt perspiciatis unde omnis iste natus error si."
 		label.font = .systemFont(ofSize: 16)
 		label.textColor = .white
@@ -49,6 +46,7 @@ final class Onboarding2VC: UIViewController {
 			make.centerX.equalToSuperview()
 		}
 
+		let dateLabel = UILabel()
 		dateLabel.text = "Enter Birth Date"
 		dateLabel.font = .systemFont(ofSize: 16)
 		dateLabel.textColor = .white
@@ -78,6 +76,7 @@ final class Onboarding2VC: UIViewController {
 			make.height.equalTo(48)
 		}
 
+		let timeLabel = UILabel()
 		timeLabel.text = "Enter Birth Date"
 		timeLabel.font = .systemFont(ofSize: 16)
 		timeLabel.textColor = .white
@@ -123,6 +122,7 @@ final class Onboarding2VC: UIViewController {
 			make.centerX.equalToSuperview()
 		}
 
+		let pages = UIImageView()
 		pages.image = UIImage(named: "img_pages2")
 		view.addSubview(pages)
 		pages.snp.makeConstraints { make in

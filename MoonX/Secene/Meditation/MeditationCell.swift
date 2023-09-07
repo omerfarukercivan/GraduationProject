@@ -12,11 +12,11 @@ class MeditationCell: NeonCollectionViewCell<MusicModel> {
 
 	private let image = UIImageView()
 	private let view = UIView()
+	private let blurView = NeonBlurView()
 	private let nameLabel = UILabel()
 	private let artistLabel = UILabel()
 	private let durationLabel = UILabel()
 	private let playButton = UIButton()
-
 
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -30,8 +30,13 @@ class MeditationCell: NeonCollectionViewCell<MusicModel> {
 	override func configure(with music: MusicModel) {
 		super.configure(with: music)
 
-		view.backgroundColor = .musicView
+		let blurView = NeonBlurView()
+		blurView.colorTint = .black
+		blurView.colorTintAlpha = 0.1
+		blurView.blurRadius = 10
+		blurView.scale = 1
 
+		let image = UIImageView()
 		image.image = UIImage(named: music.image)
 
 		nameLabel.text = music.musicName
@@ -52,6 +57,12 @@ class MeditationCell: NeonCollectionViewCell<MusicModel> {
 		contentView.addSubview(image)
 		image.snp.makeConstraints { make in
 			make.edges.equalToSuperview()
+		}
+
+		contentView.addSubview(blurView)
+		blurView.snp.makeConstraints { make in
+			make.bottom.left.right.equalToSuperview()
+			make.top.equalTo(contentView.snp.centerY).offset(40)
 		}
 
 		contentView.addSubview(view)
