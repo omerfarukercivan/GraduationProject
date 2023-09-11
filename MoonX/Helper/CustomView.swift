@@ -22,15 +22,16 @@ final class CustomView: UIView {
 		addSubview(self.image)
 		self.image.snp.makeConstraints { make in
 			make.left.equalToSuperview().offset(2)
-			make.height.equalToSuperview().multipliedBy(0.5)
+			make.height.equalToSuperview().multipliedBy(0.6)
 			make.width.equalTo(image.snp.height)
 			make.centerY.equalToSuperview()
 		}
 
 		label.textColor = .white
+		label.font = Font.custom(size: 14, fontWeight: .Light)
 		addSubview(label)
 		label.snp.makeConstraints { make in
-			make.left.equalTo(image.snp.right).offset(2)
+			make.left.equalTo(image.snp.right).offset(4)
 			make.centerY.equalToSuperview()
 		}
 	}

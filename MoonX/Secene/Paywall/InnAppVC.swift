@@ -10,60 +10,55 @@ import NeonSDK
 
 final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 
-	let closeButton = UIButton()
-	let label = UILabel()
-	let label2 = UILabel()
-	let label3 = UILabel()
-	let image1 = UIImageView()
-	let image2 = UIImageView()
-	let image3 = UIImageView()
+	private let closeButton = UIButton()
+	private let label = UILabel()
+	private let label2 = UILabel()
+	private let label3 = UILabel()
+	private let image1 = UIImageView()
+	private let image2 = UIImageView()
+	private let image3 = UIImageView()
+	private let weeklyButton = CustomInAppButton()
+	private let monthlyButton = CustomInAppButton()
+	private let annualButton = CustomInAppButton()
+	private let purchaseButton = UIButton()
+	private let legalView = NeonLegalView()
 
+	private var weeklyPrice: String?
+	private var monthlyPrice: String?
+	private var annualPrice: String?
 
-	let weeklyButton = CustomInAppButton()
-	let monthlyButton = CustomInAppButton()
-	let annualButton = CustomInAppButton()
-
-	let purchaseButton = UIButton()
-	let legalView = NeonLegalView()
-
-	var weeklyPrice: String?
-	var monthlyPrice: String?
-	var annualPrice: String?
-
-	var productID = "com.neonapps.education.SwiftyStoreKitDemo.Annual"
+	private var productID = "com.neonapps.education.SwiftyStoreKitDemo.Annual"
+	private var lastButton = 2
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		view.backgroundColor = .purple
+		view.backgroundColor = .black
 		RevenueCatManager.delegate = self
 
 		packageFetched()
 		setupUI()
 	}
 
-//	override func viewWillAppear(_ animated: Bool) {
-//		super.viewWillAppear(animated)
-//		isUserPremium()
-//	}
-
 	private func setupUI() {
-		label.text = "Lorem Ipssum\n Dolar Sit"
-		label.font = Font.custom(size: 34, fontWeight: .Bold)
+		label.text = "Lorem Ipsum\n Dolar Sit"
+		label.font = Font.custom(size: 30, fontWeight: .Bold)
 		label.textColor = .white
 		label.numberOfLines = 0
 		label.textAlignment = .center
 		view.addSubview(label)
 		label.snp.makeConstraints { make in
-			make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(10)
+			make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(6)
 			make.centerX.equalToSuperview()
 		}
 
 		closeButton.setImage(UIImage(named: "btn_close"), for: .normal)
-		closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchDown)
 		closeButton.contentMode = .scaleAspectFit
+		closeButton.addAction {
+			self.present(destinationVC: HomeVC(), slideDirection: .up)
+		}
 		view.addSubview(closeButton)
 		closeButton.snp.makeConstraints { make in
-			make.top.equalTo(view.safeAreaLayoutGuide).offset(12)
+			make.top.equalTo(view.safeAreaLayoutGuide).offset(4)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(8)
 			make.width.height.equalTo(50)
 		}
@@ -73,7 +68,7 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		label2.textColor = .white
 		view.addSubview(label2)
 		label2.snp.makeConstraints { make in
-			make.top.equalTo(label.snp.bottom)
+			make.top.equalTo(label.snp.bottom).offset(8)
 			make.centerX.equalToSuperview()
 		}
 
@@ -84,7 +79,7 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		label3.textAlignment = .center
 		view.addSubview(label3)
 		label3.snp.makeConstraints { make in
-			make.top.equalTo(label2.snp.bottom).offset(12)
+			make.top.equalTo(label2.snp.bottom).offset(8)
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(16)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(16)
 			make.centerX.equalToSuperview()
@@ -121,7 +116,8 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		weeklyButton.image.image = UIImage(named: "btn_checkbox1")
 		weeklyButton.label.text = "Weekly"
 		weeklyButton.label2.text = weeklyPrice
-		weeklyButton.addTarget(self, action: #selector(weeklyButtonTapped), for: .touchDown)
+		weeklyButton.tag = 100
+		weeklyButton.addTarget(self, action: #selector(inAppButtonTapped), for: .touchDown)
 		view.addSubview(weeklyButton)
 		weeklyButton.snp.makeConstraints { make in
 			make.top.equalTo(view.snp.centerY).multipliedBy(1.04)
@@ -133,7 +129,8 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		monthlyButton.image.image = UIImage(named: "btn_checkbox1")
 		monthlyButton.label.text = "Monthly"
 		monthlyButton.label2.text = monthlyPrice
-		monthlyButton.addTarget(self, action: #selector(monthlyButtonTapped), for: .touchDown)
+		monthlyButton.tag = 200
+		monthlyButton.addTarget(self, action: #selector(inAppButtonTapped), for: .touchDown)
 		view.addSubview(monthlyButton)
 		monthlyButton.snp.makeConstraints { make in
 			make.top.equalTo(view.snp.centerY).multipliedBy(1.27)
@@ -147,7 +144,8 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		annualButton.image.image = UIImage(named: "btn_checkbox2")
 		annualButton.label.text = "Annual"
 		annualButton.label2.text = annualPrice
-		annualButton.addTarget(self, action: #selector(annualButtonTapped), for: .touchDown)
+		annualButton.tag = 300
+		annualButton.addTarget(self, action: #selector(inAppButtonTapped), for: .touchDown)
 		view.addSubview(annualButton)
 		annualButton.snp.makeConstraints { make in
 			make.top.equalTo(view.snp.centerY).multipliedBy(1.49)
@@ -229,64 +227,25 @@ final class InnAppVC: UIViewController, RevenueCatManagerDelegate {
 		}
 	}
 
-	@objc private func closeButtonTapped() {
-		present(destinationVC: HomeVC(), slideDirection: .up)
-	}
+	@objc private func inAppButtonTapped(_ sender: CustomInAppButton) {
+		let timePeriod = "\((sender.subviews.first(where: { $0 is UILabel }) as? UILabel)!.text!)"
+		let buttons = [weeklyButton, monthlyButton, annualButton]
+		let prices = [weeklyPrice, monthlyPrice, annualPrice]
+		let index = buttons.firstIndex(of: sender)!
 
-	@objc private func weeklyButtonTapped() {
-		weeklyButton.image.image = UIImage(named: "btn_checkbox2")
-		monthlyButton.image.image = UIImage(named: "btn_checkbox1")
-		annualButton.image.image = UIImage(named: "btn_checkbox1")
+		productID = timePeriod == "Monthly" ? "com.neonapps.education.SwiftyStoreKitDemo.Montly" : "com.neonapps.education.SwiftyStoreKitDemo.\(timePeriod)"
 
-		weeklyButton.backgroundColor = .darkPurple
-		weeklyButton.layer.borderColor = UIColor.lightPurple.cgColor
+		buttons[lastButton].image.image = UIImage(named: "btn_checkbox1")
+		buttons[lastButton].backgroundColor = .mainBlack
+		buttons[lastButton].layer.borderColor = UIColor.mainBlack.cgColor
 
-		monthlyButton.backgroundColor = .mainBlack
-		monthlyButton.layer.borderColor = UIColor.mainBlack.cgColor
+		purchaseButton.setTitle("Purchase for \(prices[index]!)", for: .normal)
 
-		annualButton.backgroundColor = .mainBlack
-		annualButton.layer.borderColor = UIColor.mainBlack.cgColor
+		lastButton = index
 
-		purchaseButton.setTitle("Purchase for \(weeklyPrice!)", for: .normal)
-		productID = "com.neonapps.education.SwiftyStoreKitDemo.Weekly"
-	}
-
-	@objc private func monthlyButtonTapped() {
-		weeklyButton.image.image = UIImage(named: "btn_checkbox1")
-		monthlyButton.image.image = UIImage(named: "btn_checkbox2")
-		annualButton.image.image = UIImage(named: "btn_checkbox1")
-
-
-		weeklyButton.backgroundColor = .mainBlack
-		weeklyButton.layer.borderColor = UIColor.mainBlack.cgColor
-
-		monthlyButton.backgroundColor = .darkPurple
-		monthlyButton.layer.borderColor = UIColor.lightPurple.cgColor
-
-		annualButton.backgroundColor = .mainBlack
-		annualButton.layer.borderColor = UIColor.mainBlack.cgColor
-
-		purchaseButton.setTitle("Purchase for \(monthlyPrice!)", for: .normal)
-		productID = "com.neonapps.education.SwiftyStoreKitDemo.Montly"
-	}
-
-	@objc private func annualButtonTapped() {
-		weeklyButton.image.image = UIImage(named: "btn_checkbox1")
-		monthlyButton.image.image = UIImage(named: "btn_checkbox1")
-		annualButton.image.image = UIImage(named: "btn_checkbox2")
-
-
-		weeklyButton.backgroundColor = .mainBlack
-		weeklyButton.layer.borderColor = UIColor.mainBlack.cgColor
-
-		monthlyButton.backgroundColor = .mainBlack
-		monthlyButton.layer.borderColor = UIColor.mainBlack.cgColor
-
-		annualButton.backgroundColor = .darkPurple
-		annualButton.layer.borderColor = UIColor.lightPurple.cgColor
-
-		purchaseButton.setTitle("Purchase for \(annualPrice!)", for: .normal)
-		productID = "com.neonapps.education.SwiftyStoreKitDemo.Annual"
+		sender.image.image = UIImage(named: "btn_checkbox2")
+		sender.backgroundColor = .darkPurple
+		sender.layer.borderColor = UIColor.lightPurple.cgColor
 	}
 
 	@objc private func purchaseButtonTapped() {

@@ -131,10 +131,6 @@ final class Onboarding2VC: UIViewController {
 			make.centerX.equalToSuperview()
 		}
 
-
-
-
-
 		dateField.text = "23/11/2001"
 		timeField.text = "23.23"
 	}

@@ -18,6 +18,8 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 	private let sunSetView = CustomView()
 	private let sunRiseView = CustomView()
 	private let calender = UIDatePicker()
+	private let dateFormatter = DateFormatter()
+	private let dateLabel = UILabel()
 	private let calenderView = UILabel()
 	private let locationLabel = UILabel()
 	private let weatherLabel = UILabel()
@@ -49,16 +51,13 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		super.viewDidLoad()
 		view.backgroundColor = .black
 
-		if music != nil {
-			musicPlay(music: music.music)
-
-			Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateSlider), userInfo: nil, repeats: true)
-		}
-
+		checkPremium()
+		isMusicNil()
 		changeDate()
 		fetchWeather()
 		setupUI()
 		miniPlayer()
+		updateTime()
 	}
 
 	private func setupUI() {
@@ -88,7 +87,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.bottom.equalToSuperview()
 		}
 
-//		let tabbarView = UIView()
 		tabbar.addSubview(tabbarView)
 		tabbarView.snp.makeConstraints { make in
 			make.edges.equalToSuperview()
@@ -157,9 +155,12 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.top.equalToSuperview()
 		}
 
+		let dateFormatter = DateFormatter()
+		dateFormatter.dateFormat = "d MMM yyyy"
+
 		let calenderButton = UIButton()
-		calenderButton.setTitle("2 Aug 2023", for: .normal)
-		calenderButton.setTitleColor(.lightPurple2, for: .normal)
+		calenderButton.setTitle(dateFormatter.string(from: calender.date), for: .normal)
+		calenderButton.setTitleColor(.lightPurple, for: .normal)
 		calenderButton.backgroundColor = .dateButton
 		calenderButton.layer.cornerRadius = 10
 		calenderButton.addTarget(self, action: #selector(calenderButtonTapped), for: .touchDown)
@@ -195,7 +196,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		calenderView.addSubview(label)
 		label.snp.makeConstraints { make in
 			make.bottom.equalTo(calenderButton.snp.bottom)
-			make.centerX.equalToSuperview()
+			make.centerX.equalToSuperview().multipliedBy(0.9)
 		}
 
 		locationLabel.font = Font.custom(size: 12, fontWeight: .Medium)
@@ -203,7 +204,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		calenderView.addSubview(locationLabel)
 		locationLabel.snp.makeConstraints { make in
 			make.top.equalTo(label.snp.bottom).offset(8)
-			make.centerX.equalToSuperview()
+			make.centerX.equalTo(label.snp.centerX)
 		}
 
 		let moonImage = UIImageView()
@@ -211,20 +212,18 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		calenderView.addSubview(moonImage)
 		moonImage.snp.makeConstraints { make in
 			make.top.equalTo(locationLabel.snp.bottom).offset(24)
-			make.centerX.equalToSuperview()
+			make.centerX.equalTo(label.snp.centerX)
 		}
 
-		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "d MMM HH.mm"
 
-		let dateLabel = UILabel()
 		dateLabel.text = dateFormatter.string(from: Date())
 		dateLabel.textColor = .white
 		dateLabel.font = Font.custom(size: 14, fontWeight: .Medium)
 		calenderView.addSubview(dateLabel)
 		dateLabel.snp.makeConstraints { make in
 			make.top.equalTo(moonImage.snp.bottom).offset(24)
-			make.centerX.equalToSuperview()
+			make.centerX.equalTo(label.snp.centerX)
 		}
 
 		weatherLabel.textColor = .white
@@ -232,7 +231,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		calenderView.addSubview(weatherLabel)
 		weatherLabel.snp.makeConstraints { make in
 			make.top.equalTo(dateLabel.snp.bottom).offset(8)
-			make.centerX.equalToSuperview()
+			make.centerX.equalTo(label.snp.centerX)
 		}
 
 		// MARK: Ay ve Güneş doğum batımı
@@ -328,7 +327,9 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.top.equalTo(horoscopeButton.snp.bottom).offset(16)
 			make.left.equalToSuperview().offset(16)
 			make.right.equalToSuperview().offset(-16)
-			make.height.equalTo(horoscopeView2.snp.width).multipliedBy(1.5)
+//			make.height.equalTo(horoscopeView2.snp.width)multipliedBy(1.5)
+			make.height.greaterThanOrEqualTo(100)
+
 		}
 
 		horoscopeLoading.isHidden = true
@@ -422,8 +423,11 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.top.equalTo(stackView2.snp.bottom).offset(16)
 			make.left.equalToSuperview().offset(16)
 			make.right.equalToSuperview().offset(-16)
-			make.height.equalTo(horoscopeView3.snp.width).multipliedBy(1.5)
+//			make.height.equalTo(horoscopeView3.snp.width).multipliedBy(1.5)
+			make.height.greaterThanOrEqualTo(horoscopeView3.snp.width).multipliedBy(0.000001)
 		}
+
+		print(horoscopeView3.frame.size.height)
 
 		let offset = view.frame.size.width * 0.25
 
@@ -517,7 +521,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		miniSlider.maximumTrackTintColor = .white
 		miniSlider.minimumTrackTintColor = .lightPurple
 		miniView.addSubview(miniSlider)
-		miniSlider.addTarget(self, action: #selector(miniSliderValueChanged), for: .valueChanged)
+//		miniSlider.addTarget(self, action: #selector(miniSliderValueChanged), for: .valueChanged)
 		miniSlider.snp.makeConstraints { make in
 			make.bottom.equalTo(miniView.snp.bottom)
 			make.left.equalToSuperview().offset(2)
@@ -525,6 +529,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		}
 	}
 
+	// MARK: FUNC
 	private func convertTimeFormat(_ timeString: String) -> String? {
 		let dateFormatter = DateFormatter()
 		dateFormatter.dateFormat = "HH:mm:ss"
@@ -538,7 +543,76 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		return nil
 	}
 
-	@objc private func lunarButtonTapped(_ sender: UIButton) {
+	private func musicPlay(music: URL) {
+		if self.music == nil {
+			miniView.isHidden = true
+			tabbarView.isHidden = false
+		} else {
+			miniView.isHidden = false
+			tabbarView.isHidden = true
+
+			do {
+				audioPlayer = try AVAudioPlayer(contentsOf: music)
+				audioPlayer?.currentTime = currentTime
+				audioPlayer!.prepareToPlay()
+
+				miniSlider.maximumValue = Float(audioPlayer!.duration)
+			} catch {
+				print("Ses çalarken bir hata oluştu: \(error.localizedDescription)")
+			}
+
+			if isPlay {
+				audioPlayer?.play()
+			}
+
+			miniNameLabel.text = self.music.musicName
+			miniArtistLabel.text = self.music.artistName
+		}
+	}
+
+	func fetchWeather() {
+		APIManager.shared.fetchWeatherData() { [weak self] (data, error) in
+			if let data = data {
+					self?.locationLabel.text = (data["resolvedAddress"] as? String) ?? ""
+					if let days = data["days"] as? [[String: Any]] {
+						for dayData in days {
+							self?.moonSetView.label.text = self?.convertTimeFormat(dayData["moonset"] as? String ?? "--.--")
+							self?.moonRiseView.label.text = self?.convertTimeFormat(dayData["moonrise"] as? String ?? "--.--")
+							self?.sunSetView.label.text = self?.convertTimeFormat(dayData["sunset"] as? String ?? "--.--")
+							self?.sunRiseView.label.text = self?.convertTimeFormat(dayData["sunrise"] as? String ?? "--.--")
+							self?.weatherLabel.text = "\(dayData["conditions"] as? String ?? ""), \((dayData["temp"] as? NSNumber)?.stringValue ?? "") C"
+						}
+					}
+			} else if let error = error {
+				print("Veri çekme hatası: \(error)")
+			}
+		}
+	}
+
+	private func changeDate() {
+		let dateFormatter = DateFormatter()
+		dateFormatter.dateFormat = "yyyy-MM-dd"
+		APIManager.shared.weatherDate = dateFormatter.string(from: Date())
+	}
+
+	private func checkPremium() {
+		premium = UserDefaults.standard.integer(forKey: "premium")
+	}
+
+	private func isMusicNil() {
+		if music != nil {
+			musicPlay(music: music.music)
+
+			Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(updateSlider), userInfo: nil, repeats: true)
+		}
+	}
+
+	private func updateTime() {
+		Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
+	}
+	
+	// MARK: OBJC
+	@objc private func lunarButtonTapped(_ sender: CustomLunarButton) {
 		if premium < 3 || Neon.isUserPremium == true {
 			selectedTipLabel.text = ""
 			selectedTipHoroscope.text = ""
@@ -550,23 +624,32 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 			APIManager.shared.lunarTip = "for \(lunar)"
 
-			APIManager.shared.getHoroscope(horoscopeName: horoscopeName.text!) { result in
-				DispatchQueue.main.async {
-					switch result {
-					case .success(let response):
-						self.selectedHoroscopeLoading.stop()
-						self.selectedHoroscopeLoading.isHidden = true
-						self.selectedTipImage.isHidden = false
+//			APIManager.shared.getHoroscope(horoscopeName: horoscopeName.text!) { result in
+//				DispatchQueue.main.async {
+//					switch result {
+//					case .success(let response):
+//						self.selectedHoroscopeLoading.stop()
+//						self.selectedHoroscopeLoading.isHidden = true
+//						self.selectedTipImage.isHidden = false
+//
+//						self.selectedTipImage.image = UIImage(named: "img_\(lunar.lowercased())2")
+//						self.selectedTipLabel.text = lunar
+//						self.selectedTipHoroscope.text = response
+//					case .failure(let error):
+//						print(error.localizedDescription)
+//					}
+//				}
+//			}
 
-						self.selectedTipImage.image = UIImage(named: "img_\(lunar.lowercased())2")
-						self.selectedTipLabel.text = lunar
-						self.selectedTipHoroscope.text = response
-					case .failure(let error):
-						print(error.localizedDescription)
-					}
-				}
-			}
+
+
+
+
+			selectedTipHoroscope.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem"
+
+
 			premium += 1
+			UserDefaults.standard.set(premium, forKey: "premium")
 		} else {
 			present(destinationVC: InnAppVC(), slideDirection: .up)
 		}
@@ -594,6 +677,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			//			}
 			//		}
 			premium += 1
+			UserDefaults.standard.set(premium, forKey: "premium")
 		} else {
 			present(destinationVC: InnAppVC(), slideDirection: .up)
 		}
@@ -667,39 +751,12 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		}
 	}
 
-	@objc private func miniSliderValueChanged() {
-		audioPlayer?.stop()
-		audioPlayer?.currentTime = TimeInterval(miniSlider.value)
-		audioPlayer?.prepareToPlay()
-		audioPlayer?.play()
-	}
-
-	private func musicPlay(music: URL) {
-		if self.music == nil {
-			miniView.isHidden = true
-			tabbarView.isHidden = false
-		} else {
-			miniView.isHidden = false
-			tabbarView.isHidden = true
-
-			do {
-				audioPlayer = try AVAudioPlayer(contentsOf: music)
-				audioPlayer?.currentTime = currentTime
-				audioPlayer!.prepareToPlay()
-
-				miniSlider.maximumValue = Float(audioPlayer!.duration)
-			} catch {
-				print("Ses çalarken bir hata oluştu: \(error.localizedDescription)")
-			}
-
-			if isPlay {
-				audioPlayer?.play()
-			}
-
-			miniNameLabel.text = self.music.musicName
-			miniArtistLabel.text = self.music.artistName
-		}
-	}
+//	@objc private func miniSliderValueChanged() {
+//		audioPlayer?.stop()
+//		audioPlayer?.currentTime = TimeInterval(miniSlider.value)
+//		audioPlayer?.prepareToPlay()
+//		audioPlayer?.play()
+//	}
 
 	@objc private func updateSlider() {
 		miniSlider.value = Float(audioPlayer!.currentTime)
@@ -724,30 +781,8 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		present(destinationVC: vc, slideDirection: .up)
 	}
 
-	func fetchWeather() {
-		APIManager.shared.fetchWeatherData() { [weak self] (data, error) in
-			if let data = data {
-				DispatchQueue.main.async {
-					self?.locationLabel.text = (data["resolvedAddress"] as? String) ?? ""
-					if let days = data["days"] as? [[String: Any]] {
-						for dayData in days {
-							self?.moonSetView.label.text = self?.convertTimeFormat(dayData["moonset"] as? String ?? "--.--")
-							self?.moonRiseView.label.text = self?.convertTimeFormat(dayData["moonrise"] as? String ?? "--.--")
-							self?.sunSetView.label.text = self?.convertTimeFormat(dayData["sunset"] as? String ?? "--.--")
-							self?.sunRiseView.label.text = self?.convertTimeFormat(dayData["sunrise"] as? String ?? "--.--")
-							self?.weatherLabel.text = "\(dayData["conditions"] as? String ?? ""), \((dayData["temp"] as? NSNumber)?.stringValue ?? "") C"
-						}
-					}
-				}
-			} else if let error = error {
-				print("Veri çekme hatası: \(error)")
-			}
-		}
-	}
-
-	private func changeDate() {
-		let dateFormatter = DateFormatter()
-		dateFormatter.dateFormat = "yyyy-MM-dd"
-		APIManager.shared.weatherDate = dateFormatter.string(from: Date())
+	@objc private func updateTimer() {
+		dateFormatter.dateFormat = "d MMM HH.mm"
+		dateLabel.text = dateFormatter.string(from: Date())
 	}
 }

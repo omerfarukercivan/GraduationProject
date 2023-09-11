@@ -40,7 +40,7 @@ class APIManager {
 		let gptApi = ChatGPTAPI(apiKey: "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")
 
 		let text = "If I am a \(horoscopeName), pretend you are a fortune teller, please generate my horoscope for \(gptDate) \(lunarTip)."
-//Please try to limit it 120 words
+		
 		if gptDate == "" {
 			gptDate = "today"
 		}

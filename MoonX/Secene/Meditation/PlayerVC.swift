@@ -34,7 +34,6 @@ class PlayerVC: UIViewController {
 		currentTime = 0
 
 		favMusic2()
-
 		setupUI()
 	}
 
