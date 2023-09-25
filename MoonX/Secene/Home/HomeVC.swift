@@ -327,9 +327,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.top.equalTo(horoscopeButton.snp.bottom).offset(16)
 			make.left.equalToSuperview().offset(16)
 			make.right.equalToSuperview().offset(-16)
-//			make.height.equalTo(horoscopeView2.snp.width)multipliedBy(1.5)
-			make.height.greaterThanOrEqualTo(100)
-
 		}
 
 		horoscopeLoading.isHidden = true
@@ -423,8 +420,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			make.top.equalTo(stackView2.snp.bottom).offset(16)
 			make.left.equalToSuperview().offset(16)
 			make.right.equalToSuperview().offset(-16)
-//			make.height.equalTo(horoscopeView3.snp.width).multipliedBy(1.5)
-			make.height.greaterThanOrEqualTo(horoscopeView3.snp.width).multipliedBy(0.000001)
 		}
 
 		print(horoscopeView3.frame.size.height)
@@ -521,7 +516,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 		miniSlider.maximumTrackTintColor = .white
 		miniSlider.minimumTrackTintColor = .lightPurple
 		miniView.addSubview(miniSlider)
-//		miniSlider.addTarget(self, action: #selector(miniSliderValueChanged), for: .valueChanged)
 		miniSlider.snp.makeConstraints { make in
 			make.bottom.equalTo(miniView.snp.bottom)
 			make.left.equalToSuperview().offset(2)
@@ -573,16 +567,16 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 	func fetchWeather() {
 		APIManager.shared.fetchWeatherData() { [weak self] (data, error) in
 			if let data = data {
-					self?.locationLabel.text = (data["resolvedAddress"] as? String) ?? ""
-					if let days = data["days"] as? [[String: Any]] {
-						for dayData in days {
-							self?.moonSetView.label.text = self?.convertTimeFormat(dayData["moonset"] as? String ?? "--.--")
-							self?.moonRiseView.label.text = self?.convertTimeFormat(dayData["moonrise"] as? String ?? "--.--")
-							self?.sunSetView.label.text = self?.convertTimeFormat(dayData["sunset"] as? String ?? "--.--")
-							self?.sunRiseView.label.text = self?.convertTimeFormat(dayData["sunrise"] as? String ?? "--.--")
-							self?.weatherLabel.text = "\(dayData["conditions"] as? String ?? ""), \((dayData["temp"] as? NSNumber)?.stringValue ?? "") C"
-						}
+				self?.locationLabel.text = (data["resolvedAddress"] as? String) ?? ""
+				if let days = data["days"] as? [[String: Any]] {
+					for dayData in days {
+						self?.moonSetView.label.text = self?.convertTimeFormat(dayData["moonset"] as? String ?? "--.--")
+						self?.moonRiseView.label.text = self?.convertTimeFormat(dayData["moonrise"] as? String ?? "--.--")
+						self?.sunSetView.label.text = self?.convertTimeFormat(dayData["sunset"] as? String ?? "--.--")
+						self?.sunRiseView.label.text = self?.convertTimeFormat(dayData["sunrise"] as? String ?? "--.--")
+						self?.weatherLabel.text = "\(dayData["conditions"] as? String ?? ""), \((dayData["temp"] as? NSNumber)?.stringValue ?? "") C"
 					}
+				}
 			} else if let error = error {
 				print("Veri çekme hatası: \(error)")
 			}
@@ -610,7 +604,7 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 	private func updateTime() {
 		Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateTimer), userInfo: nil, repeats: true)
 	}
-	
+
 	// MARK: OBJC
 	@objc private func lunarButtonTapped(_ sender: CustomLunarButton) {
 		if premium < 3 || Neon.isUserPremium == true {
@@ -624,29 +618,22 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 			APIManager.shared.lunarTip = "for \(lunar)"
 
-//			APIManager.shared.getHoroscope(horoscopeName: horoscopeName.text!) { result in
-//				DispatchQueue.main.async {
-//					switch result {
-//					case .success(let response):
-//						self.selectedHoroscopeLoading.stop()
-//						self.selectedHoroscopeLoading.isHidden = true
-//						self.selectedTipImage.isHidden = false
-//
-//						self.selectedTipImage.image = UIImage(named: "img_\(lunar.lowercased())2")
-//						self.selectedTipLabel.text = lunar
-//						self.selectedTipHoroscope.text = response
-//					case .failure(let error):
-//						print(error.localizedDescription)
-//					}
-//				}
-//			}
+			APIManager.shared.getHoroscope(horoscopeName: horoscopeName.text!) { result in
+				DispatchQueue.main.async {
+					switch result {
+					case .success(let response):
+						self.selectedHoroscopeLoading.stop()
+						self.selectedHoroscopeLoading.isHidden = true
+						self.selectedTipImage.isHidden = false
 
-
-
-
-
-			selectedTipHoroscope.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem"
-
+						self.selectedTipImage.image = UIImage(named: "img_\(lunar.lowercased())2")
+						self.selectedTipLabel.text = lunar
+						self.selectedTipHoroscope.text = response
+					case .failure(let error):
+						print(error.localizedDescription)
+					}
+				}
+			}
 
 			premium += 1
 			UserDefaults.standard.set(premium, forKey: "premium")
@@ -658,24 +645,22 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 
 	@objc private func horoscopeButtonTapped() {
 		if premium < 3 || Neon.isUserPremium == true {
-			//		horoscopeLabel.text = ""
-			//		horoscopeLoading.isHidden = false
-			//		horoscopeLoading.play()
+			horoscopeLabel.text = ""
+			horoscopeLoading.isHidden = false
+			horoscopeLoading.play()
 
-			horoscopeLabel.text = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem IpsumLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem"
-
-			//		APIManager.shared.getHoroscope(horoscopeName: horoscopeName.text!) { result in
-			//			DispatchQueue.main.async {
-			//				switch result {
-			//				case .success(let response):
-			//					self.horoscopeLoading.stop()
-			//					self.horoscopeLoading.isHidden = true
-			//					self.horoscopeLabel.text = response
-			//				case .failure(let error):
-			//					print(error.localizedDescription)
-			//				}
-			//			}
-			//		}
+			APIManager.shared.getHoroscope(horoscopeName: horoscopeName.text!) { result in
+				DispatchQueue.main.async {
+					switch result {
+					case .success(let response):
+						self.horoscopeLoading.stop()
+						self.horoscopeLoading.isHidden = true
+						self.horoscopeLabel.text = response
+					case .failure(let error):
+						print(error.localizedDescription)
+					}
+				}
+			}
 			premium += 1
 			UserDefaults.standard.set(premium, forKey: "premium")
 		} else {
@@ -750,13 +735,6 @@ final class HomeVC: UIViewController, UIScrollViewDelegate {
 			}
 		}
 	}
-
-//	@objc private func miniSliderValueChanged() {
-//		audioPlayer?.stop()
-//		audioPlayer?.currentTime = TimeInterval(miniSlider.value)
-//		audioPlayer?.prepareToPlay()
-//		audioPlayer?.play()
-//	}
 
 	@objc private func updateSlider() {
 		miniSlider.value = Float(audioPlayer!.currentTime)

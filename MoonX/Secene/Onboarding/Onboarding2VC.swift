@@ -40,7 +40,6 @@ final class Onboarding2VC: UIViewController {
 		label.numberOfLines = 0
 		view.addSubview(label)
 		label.snp.makeConstraints { make in
-//			make.bottom.equalTo(backgroundImage.snp.bottom).inset(32)
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(48)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(48)
 			make.centerX.equalToSuperview()
@@ -130,9 +129,6 @@ final class Onboarding2VC: UIViewController {
 			make.bottom.equalTo(nextButton.snp.top).offset(-24)
 			make.centerX.equalToSuperview()
 		}
-
-		dateField.text = "23/11/2001"
-		timeField.text = "23.23"
 	}
 
 	@objc private func nextButtonTapped() {

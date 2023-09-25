@@ -45,7 +45,6 @@ final class Onboarding3VC: UIViewController {
 		label.numberOfLines = 0
 		view.addSubview(label)
 		label.snp.makeConstraints { make in
-//			make.bottom.equalTo(backgroundImage.snp.bottom).inset(40)
 			make.left.equalTo(view.safeAreaLayoutGuide.snp.left).offset(48)
 			make.right.equalTo(view.safeAreaLayoutGuide.snp.right).inset(48)
 			make.centerX.equalToSuperview()
@@ -66,7 +65,7 @@ final class Onboarding3VC: UIViewController {
 			make.centerX.equalToSuperview()
 		}
 
-		 let locationLabel = UILabel()
+		let locationLabel = UILabel()
 		locationLabel.text = "Enter Your Place of Birth"
 		locationLabel.font = Font.custom(size: 16, fontWeight: .Medium)
 		locationLabel.textColor = .white
@@ -110,7 +109,7 @@ final class Onboarding3VC: UIViewController {
 			make.centerX.equalToSuperview()
 		}
 
-		 let pages = UIImageView()
+		let pages = UIImageView()
 		pages.image = UIImage(named: "img_pages3")
 		view.addSubview(pages)
 		pages.snp.makeConstraints { make in

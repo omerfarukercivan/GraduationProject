@@ -17,7 +17,7 @@ class APIManager {
 	var lunarTip = ""
 
 	func fetchWeatherData(completion: @escaping([String: Any]?, Error?) -> Void) {
-		let key = "CZMGSHZDK65BQXPVXGVWW3QJ6"
+		let key = "API_KEY"
 		let adress = UserDefaults.standard.value(forKey: "location")! as! String
 
 		let url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/\(adress)/\(weatherDate)?unitGroup=metric&key=\(key)&include=days&elements=datetime,sunrise,sunset,moonset,moonrise,temp,conditions"
@@ -37,10 +37,10 @@ class APIManager {
 	}
 
 	func getHoroscope(horoscopeName: String, completion: @escaping (Result<String, Error>) -> Void) {
-		let gptApi = ChatGPTAPI(apiKey: "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")
+		let gptApi = ChatGPTAPI(apiKey: "API_KEY")
 
 		let text = "If I am a \(horoscopeName), pretend you are a fortune teller, please generate my horoscope for \(gptDate) \(lunarTip)."
-		
+
 		if gptDate == "" {
 			gptDate = "today"
 		}

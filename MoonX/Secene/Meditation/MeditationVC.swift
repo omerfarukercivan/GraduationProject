@@ -7,18 +7,14 @@
 
 import UIKit
 import NeonSDK
-//import AVFAudio
 
 final class MeditationVC: UIViewController {
 
 	private var musicSegment: UISegmentedControl!
 	private var musicTitle = UILabel()
-//	private var musicTitle2 = UILabel()
 	private var tableView = MusicTableView()
 	private var collectionView = NeonCollectionView<MusicModel, MeditationCell>()
-//	private var collectionViewXYZ = NeonCollectionView<MusicModel, MeditationCell>()
 
-//	private var musics = [MusicModel]()
 	private var musics = Musics.shared.musics
 	private var filteredMusic = [MusicModel]()
 
@@ -105,8 +101,6 @@ final class MeditationVC: UIViewController {
 
 			vc.music = object
 			vc.filteredMusic = self.musics.filter({ $0.segment == object.segment && $0.section == object.section })
-
-//			print(object.se)
 
 			self.present(destinationVC: vc, slideDirection: .up)
 		}

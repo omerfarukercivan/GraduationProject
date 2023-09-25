@@ -64,7 +64,7 @@ final class SettingsVC: UIViewController {
 		}
 
 		let premiumLabel1 = UILabel()
-		premiumLabel1.text = "Get Premium \n\n to Access All Contents!"
+		premiumLabel1.text = "Get Premium \nto Access All Contents!"
 		premiumLabel1.textColor = .white
 		premiumLabel1.numberOfLines = 0
 		premiumLabel1.font = Font.custom(size: 20, fontWeight: .SemiBold)
